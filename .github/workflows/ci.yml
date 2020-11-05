@@ -1,0 +1,214 @@
+name: ci
+
+# Trigger on pushes to all branches and for all pull-requests
+on: [push, pull_request]
+
+env:
+  CMAKE_VERSION: 3.16.2
+  NINJA_VERSION: 1.10.0
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        # GCC-10
+        - {
+            name: "Linux GCC 10",
+            os: ubuntu-20.04,
+            build_type: Release,
+            cxx: "g++-10",
+            gcc_version: 10,
+          }
+
+        # Clang-11
+        - {
+            name: "Linux Clang 11",
+            os: ubuntu-20.04,
+            build_type: Release,
+            cxx: "clang++-11",
+            clang_version: 11,
+            libcxx: true
+          }
+
+        # # AppleClang
+        # - {
+        #     name: "macOS Clang",
+        #     os: macos-latest,
+        #     build_type: Release,
+        #     cxx: "clang++",
+        #   }
+
+        # MSVC 2019
+        - {
+            name: "Windows MSVC 2019",
+            os: windows-latest,
+            build_type: Release,
+            cxx: "cl",
+            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
+          }
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
+
+    - name: Download Ninja and CMake
+      id: cmake_and_ninja
+      shell: cmake -P {0}
+      run: |
+        set(cmake_version $ENV{CMAKE_VERSION})
+        set(ninja_version $ENV{NINJA_VERSION})
+
+        message(STATUS "Using host CMake version: ${CMAKE_VERSION}")
+
+        if ("${{ runner.os }}" STREQUAL "Windows")
+          set(ninja_suffix "win.zip")
+          set(cmake_suffix "win64-x64.zip")
+          set(cmake_dir "cmake-${cmake_version}-win64-x64/bin")
+        elseif ("${{ runner.os }}" STREQUAL "Linux")
+          set(ninja_suffix "linux.zip")
+          set(cmake_suffix "Linux-x86_64.tar.gz")
+          set(cmake_dir "cmake-${cmake_version}-Linux-x86_64/bin")
+        elseif ("${{ runner.os }}" STREQUAL "macOS")
+          set(ninja_suffix "mac.zip")
+          set(cmake_suffix "Darwin-x86_64.tar.gz")
+          set(cmake_dir "cmake-${cmake_version}-Darwin-x86_64/CMake.app/Contents/bin")
+        endif()
+
+        set(ninja_url "https://github.com/ninja-build/ninja/releases/download/v${ninja_version}/ninja-${ninja_suffix}")
+        file(DOWNLOAD "${ninja_url}" ./ninja.zip SHOW_PROGRESS)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf ./ninja.zip)
+
+        set(cmake_url "https://github.com/Kitware/CMake/releases/download/v${cmake_version}/cmake-${cmake_version}-${cmake_suffix}")
+        file(DOWNLOAD "${cmake_url}" ./cmake.zip SHOW_PROGRESS)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf ./cmake.zip)
+
+        # preserve it for the next steps
+        file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}/${cmake_dir}" cmake_dir)
+        message("::set-output name=cmake_dir::${cmake_dir}")
+
+        if (NOT "${{ runner.os }}" STREQUAL "Windows")
+          execute_process(
+            COMMAND chmod +x ninja
+            COMMAND chmod +x ${cmake_dir}/cmake
+          )
+        endif()
+
+    - name: Install Clang 11
+      id: install_clang_11
+      if: startsWith(matrix.config.os, 'ubuntu') && ( matrix.config.cxx == 'clang++-11' )
+      shell: bash
+      working-directory: ${{ env.HOME }}
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        sudo ./llvm.sh ${{ matrix.config.clang_version }}
+
+    - name: Install g++ 10
+      id: install_gcc_10
+      if: startsWith(matrix.config.os, 'ubuntu') && ( matrix.config.cxx == 'g++-10' )
+      shell: bash
+      working-directory: ${{ env.HOME }}
+      env:
+        CXX: ${{ matrix.config.cxx }}
+      run: |
+        curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt-get update
+        sudo apt-get install g++-${{ matrix.config.gcc_version }}
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+
+    - name: Install libc++
+      id: install_libcxx
+      if: matrix.config.libcxx
+      shell: bash
+      working-directory: ${{ env.HOME }}
+      env:
+        CXX: ${{ matrix.config.cxx }}
+      run: |
+        sudo apt-get install libc++-${{ matrix.config.clang_version }}-dev libc++abi-${{ matrix.config.clang_version }}-dev
+
+    - name: Configure
+      id: cmake_configure
+      shell: cmake -P {0}
+      run: |
+        set(ENV{CXX} ${{ matrix.config.cxx }})
+
+        if ("${{ runner.os }}" STREQUAL "Windows")
+          execute_process(
+            COMMAND "${{ matrix.config.environment_script }}" && set
+            OUTPUT_FILE environment_script_output.txt
+          )
+          set(cxx_flags "/permissive- /EHsc")
+          file(STRINGS environment_script_output.txt output_lines)
+          foreach(line IN LISTS output_lines)
+            if (line MATCHES "^([a-zA-Z0-9_-]+)=(.*)$")
+              set(ENV{${CMAKE_MATCH_1}} "${CMAKE_MATCH_2}")
+            endif()
+          endforeach()
+        endif()
+
+        set(path_separator ":")
+        if ("${{ runner.os }}" STREQUAL "Windows")
+          set(path_separator ";")
+        endif()
+        set(ENV{PATH} "$ENV{GITHUB_WORKSPACE}${path_separator}$ENV{PATH}")
+
+        if ("x${{ matrix.config.libcxx }}" STREQUAL "xtrue")
+          set(cxx_flags "${cxx_flags} -stdlib=libc++ -Wno-unused-command-line-argument")
+          set(link_flags "${link_flags} -lc++abi")
+        endif()
+
+        execute_process(
+          COMMAND ${{ steps.cmake_and_ninja.outputs.cmake_dir }}/cmake
+            -S .
+            -B build
+            -G Ninja
+            -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+            -D CMAKE_MAKE_PROGRAM:STRING=ninja
+            -D "CMAKE_CXX_FLAGS:STRING=${cxx_flags}"
+            -D "CMAKE_EXE_LINKER_FLAGS:STRING=${link_flags}"
+            ${{ matrix.config.cmake_args }}
+          RESULT_VARIABLE result
+        )
+        if (NOT result EQUAL 0)
+          message(FATAL_ERROR "Bad exit from cmake configure status")
+        endif()
+
+    - name: Build
+      shell: cmake -P {0}
+      continue-on-error: false
+      run: |
+        set(ENV{NINJA_STATUS} "[%f/%t %o/sec] ")
+
+        if ("${{ runner.os }}" STREQUAL "Windows")
+          execute_process(
+            COMMAND "${{ matrix.config.environment_script }}" && set
+            OUTPUT_FILE environment_script_output.txt
+          )
+          set(cxx_flags "/permissive- /EHsc")
+          file(STRINGS environment_script_output.txt output_lines)
+          foreach(line IN LISTS output_lines)
+            if (line MATCHES "^([a-zA-Z0-9_-]+)=(.*)$")
+              set(ENV{${CMAKE_MATCH_1}} "${CMAKE_MATCH_2}")
+            endif()
+          endforeach()
+        endif()
+
+        set(path_separator ":")
+        if ("${{ runner.os }}" STREQUAL "Windows")
+          set(path_separator ";")
+        endif()
+        set(ENV{PATH} "$ENV{GITHUB_WORKSPACE}${path_separator}$ENV{PATH}")
+
+        execute_process(
+          COMMAND ${{ steps.cmake_and_ninja.outputs.cmake_dir }}/cmake --build build
+          RESULT_VARIABLE result
+        )
+        if (NOT result EQUAL 0)
+          message(FATAL_ERROR "Bad exit status from building")
+        endif()

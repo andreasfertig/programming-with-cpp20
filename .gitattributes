@@ -1,0 +1,2 @@
+# Ignore CMakeLists.txt for GitHubs repo language detection
+CMakeLists.txt linguist-detectable=false
