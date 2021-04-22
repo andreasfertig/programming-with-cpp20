@@ -24,13 +24,13 @@ jobs:
             gcc_version: 10,
           }
 
-        # Clang-11
+        # Clang-12
         - {
-            name: "Linux Clang 11",
+            name: "Linux Clang 12",
             os: ubuntu-20.04,
             build_type: Release,
-            cxx: "clang++-11",
-            clang_version: 11,
+            cxx: "clang++-12",
+            clang_version: 12,
             libcxx: true
           }
 
@@ -98,9 +98,9 @@ jobs:
           )
         endif()
 
-    - name: Install Clang 11
+    - name: Install Clang 12
       id: install_clang_11
-      if: startsWith(matrix.config.os, 'ubuntu') && ( matrix.config.cxx == 'clang++-11' )
+      if: startsWith(matrix.config.os, 'ubuntu') && startsWith(matrix.config.cxx, 'clang++-')
       shell: bash
       working-directory: ${{ env.HOME }}
       run: |

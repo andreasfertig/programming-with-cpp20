@@ -24,8 +24,8 @@ function(check_compiler COMPILER version)
 endfunction(check_compiler)
 
 check_compiler("GNU" 10.2)
-check_compiler("Clang" 11.0)
-check_compiler("MSVC" 19.28.29333.0)
+check_compiler("Clang" 12.0)
+check_compiler("MSVC" 19.28.29914.0)
 
 
 if(NOT HAVE_COMPILER)

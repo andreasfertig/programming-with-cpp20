@@ -22,13 +22,13 @@ void print(First&& first, Rest&&... args)
   std::cout << '\n';
 }
 
-#if not defined(__clang__) && not defined(_MSC_VER)
+#if not defined(_MSC_VER) && not defined(__clang__)
 template<typename... Origins>
 auto getNamedLogger(Origins... origins)
 {
 return [... _origins = std::forward<Origins>(origins)]<typename... Ts>
   // #A Requires-clause with disjunction of is_floating_point to limit Ts
-  requires(not std::disjunction_v<std::is_floating_point<Ts>...>)(
+  requires(not std::disjunction_v<std::is_floating_point<Ts>...>) (
     Ts... args)
   // #B Trailing requires with disjunction and is_pointer to limit Origins to no pointers
   requires(not std::disjunction_v<std::is_pointer<Origins>...>)
