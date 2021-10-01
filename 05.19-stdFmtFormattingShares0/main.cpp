@@ -7,6 +7,7 @@
 #  include <iostream>
 #  include <locale>
 #  include <string>
+#  include <vector>
 
 class Share {
   std::string mName;

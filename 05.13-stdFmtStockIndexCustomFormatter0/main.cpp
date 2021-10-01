@@ -1,12 +1,13 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>)
+#if __has_include(<format>) && not defined(_MSC_VER)
 #  include <format>
 #  include <iomanip>
 #  include <iostream>
 #  include <locale>
 #  include <string>
+#  include <vector>
 
 class StockIndex {
   std::string mName{};

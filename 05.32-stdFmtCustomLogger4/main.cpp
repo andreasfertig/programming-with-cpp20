@@ -1,7 +1,7 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>)
+#if __has_include(<format>) && not defined(_MSC_VER)
 #  include <array>
 #  include <chrono>
 #  include <format>

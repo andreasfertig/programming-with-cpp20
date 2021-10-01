@@ -16,8 +16,7 @@ struct fixed_string {
   }
 };
 
-#if not(defined(__GNUC__) && !defined(__clang__)) && __has_include(<ranges>)
-
+#if __has_include(<ranges>)
 template<fixed_string Str>  // #A Here we have a NTTP
 struct FixedStringContainer {
   void print()
@@ -65,7 +64,6 @@ int main()
 
   print("%s, %s"_fs, "Hello", "C++20");
 }
-
 #else
 int main()
 {

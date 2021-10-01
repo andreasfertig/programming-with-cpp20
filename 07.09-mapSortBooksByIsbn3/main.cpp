@@ -30,8 +30,9 @@ using MapSortedByIsbn =
 
 namespace usingAliasVersion {
   // #A Define a using alias with the compare lambda which can be reused
-  using cmp =
-    decltype([](const Book& a, const Book& b) { return a.isbn > b.isbn; });
+  using cmp = decltype([](const Book& a, const Book& b) {
+    return a.isbn > b.isbn;
+  });
 
   template<typename KEY, typename VALUE>
   using MapSortedByIsbn = std::map<KEY,

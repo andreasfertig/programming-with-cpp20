@@ -4,7 +4,6 @@
 #include <cstdio>
 #include <type_traits>
 
-#if not (defined(__GNUC__) && !defined(__clang__))
 template<typename T, typename U>
 concept same_as =
   std::is_same_v<std::remove_cvref_t<T>, std::remove_cvref_t<U>>;
@@ -117,10 +116,3 @@ static_assert(not Test<WithoutType, WithoutType>);
 
 
 int main(){}
-#else
-#  pragma message("not supported")
-int main()
-{
-  return 1;
-}
-#endif

@@ -27,10 +27,9 @@ static_assert(not ByteLikeType<double*>);
 namespace conceptVersion {
 
   template<typename T>
-  concept ByteLikeType =
-    std::same_as<void*, T> || std::same_as<char*, T> ||
-    std::same_as<unsigned char*, T> || std::same_as<const void*, T> ||
-    std::same_as<const char*, T> ||
+  concept ByteLikeType = std::same_as<void*, T> ||
+    std::same_as<char*, T> || std::same_as<unsigned char*, T> ||
+    std::same_as<const void*, T> || std::same_as<const char*, T> ||
     std::same_as<const unsigned char*, T>;
 
   static_assert(ByteLikeType<char*>);

@@ -7,7 +7,7 @@ template<typename V, typename W>
 concept IsSameHelper = std::is_same_v<V, W>;
 
 template<typename V, typename W>
-concept IsSame = IsSameHelper<V, W>&& IsSameHelper<W, V>;
+concept IsSame = IsSameHelper<V, W> && IsSameHelper<W, V>;
 
 template<typename T>
 concept AlwaysTrue = true;
@@ -20,7 +20,7 @@ requires(not IsSame<T, U>)  // #A Inverting IsSame with not
 }
 
 template<typename T, typename U>
-  requires(not IsSame<T, U>)  // #B Inverting IsSame with not
+requires(not IsSame<T, U>)  // #B Inverting IsSame with not
   && AlwaysTrue<T> auto add(const T& t, const U& u)
 {
   return t + u;

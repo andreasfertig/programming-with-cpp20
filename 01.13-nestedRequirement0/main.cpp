@@ -27,12 +27,7 @@ requires(Args... args)
 
 int main()
 {
-#  if not (defined(__GNUC__) && !defined(__clang__))
   printf("%d\n", add(2, 3, 4));
 
   printf("%d\n", add(2, 5));
-#  else
-#    pragma message("not supported")
-  return 1;
-#  endif
 }

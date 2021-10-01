@@ -30,7 +30,7 @@ auto getNamedLogger(Origins... origins)
             origins)...)]<typename... Ts>(Ts... args)
   {
     std::apply(
-      // #B A second lambda which is applies to the tuple values
+      // #B A second lambda which is applied to the tuple values
       [&](const auto&... _origins) {
         print(_origins..., std::forward<Ts>(args)...);
       },

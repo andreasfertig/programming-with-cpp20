@@ -7,7 +7,7 @@ template<typename V, typename W>
 concept IsSameHelper = std::is_same_v<V, W>;
 
 template<typename V, typename W>
-concept IsSame = IsSameHelper<V, W>&& IsSameHelper<W, V>;
+concept IsSame = IsSameHelper<V, W> && IsSameHelper<W, V>;
 
 template<typename T>
 concept AlwaysTrue = true;
@@ -15,14 +15,15 @@ concept AlwaysTrue = true;
 template<typename T, typename U>
 requires IsSame<U,
                 T>  // #A The arguments are swapped T, U vs U, T
-  auto add(const T& t, const U& u)
+auto add(const T& t, const U& u)
 {
   return t + u;
 }
 
 template<typename T, typename U>
 requires IsSame<T, U>  // #B The arguments remain unchanged
-  && AlwaysTrue<T> auto add(const T& t, const U& u)
+  && AlwaysTrue<T>
+auto add(const T& t, const U& u)
 {
   return t + u;
 }

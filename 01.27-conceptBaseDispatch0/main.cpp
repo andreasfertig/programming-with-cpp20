@@ -10,7 +10,7 @@
 
 template<typename T>
 concept ByteLikeType = std::is_same_v<char, T> || std::is_same_v<unsigned char, T> ||
-                       std::is_same_v<const char, T> || std::is_same_v<const unsigned char, T>;
+  std::is_same_v<const char, T> || std::is_same_v<const unsigned char, T>;
 
 // #A Make value_type easily accessible
 template<typename T>
@@ -25,9 +25,9 @@ constexpr auto ExtractSize(T t = {})  // #C Default parameter
 }
 
 template<typename T>
-concept SmallBuffer = ExtractSize<std::remove_reference_t<T>>() <=
-                        16 &&                         // #A Constrain the size
-                      ByteLikeType<value_type_t<T>>;  // #B Ensure the value_type is byte-like
+concept SmallBuffer = ExtractSize<std::remove_reference_t<T>>()
+<= 16 &&                          // #A Constrain the size
+  ByteLikeType<value_type_t<T>>;  // #B Ensure the value_type is byte-like
 
 template<typename T>
 concept LargeBuffer = not SmallBuffer<T> &&           // #C Not a SmallBuffer
@@ -71,7 +71,8 @@ void FlushAckQueue()
 
 namespace implementationWithRequires {
   template<typename T>
-  requires SmallBuffer<T> void Send(T&& buffer)
+  requires SmallBuffer<T>
+  void Send(T&& buffer)
   {
     if(gAckQueue.size() > 10) {
       FlushAckQueue();
@@ -82,10 +83,8 @@ namespace implementationWithRequires {
   }
 
   template<typename T>
-  requires LargeBuffer<T> void Send(T&& buffer)
-  {
-    send(buffer.data(), buffer.size());
-  }
+  requires LargeBuffer<T>
+  void Send(T&& buffer) { send(buffer.data(), buffer.size()); }
 
   void CallingSendWithRequires()
   {

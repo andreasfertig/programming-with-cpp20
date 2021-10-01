@@ -7,8 +7,7 @@
 #include <cstddef>
 #include <iostream>
 
-#if not(defined(__GNUC__) && !defined(__clang__)) && __has_include(<ranges>)
-
+#if __has_include(<ranges>)
 template<typename CharT, std::size_t N>
 struct fixed_string {
   CharT data[N]{};
@@ -60,7 +59,6 @@ int main()
 
   Use();
 }
-
 #else
 int main()
 {

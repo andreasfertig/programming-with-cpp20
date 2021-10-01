@@ -17,11 +17,11 @@ jobs:
         config:
         # GCC-10
         - {
-            name: "Linux GCC 10",
+            name: "Linux GCC 11",
             os: ubuntu-20.04,
             build_type: Release,
-            cxx: "g++-10",
-            gcc_version: 10,
+            cxx: "g++-11",
+            gcc_version: 11,
           }
 
         # Clang-12
@@ -107,10 +107,11 @@ jobs:
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
         sudo ./llvm.sh ${{ matrix.config.clang_version }}
+        sudo apt-get install -y libunwind-dev
 
-    - name: Install g++ 10
-      id: install_gcc_10
-      if: startsWith(matrix.config.os, 'ubuntu') && ( matrix.config.cxx == 'g++-10' )
+    - name: Install g++ 11
+      id: install_gcc_11
+      if: startsWith(matrix.config.os, 'ubuntu') && ( matrix.config.cxx == 'g++-11' )
       shell: bash
       working-directory: ${{ env.HOME }}
       env:
@@ -120,7 +121,7 @@ jobs:
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt-get update
         sudo apt-get install g++-${{ matrix.config.gcc_version }}
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 100
 
     - name: Install libc++
       id: install_libcxx

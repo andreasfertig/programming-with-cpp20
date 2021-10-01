@@ -64,13 +64,8 @@ Rational<T>& Rational<T>::operator+(const Rational<T>& rhs) noexcept
 
 int main()
 {
-#if not(defined(__GNUC__) && !defined(__clang__))
   using RationalInt = Rational<int>;
 
   auto a = add(RationalInt{3, 4}, RationalInt{4, 4}, RationalInt{5, 4});
   printf("%d/%d\n", a.Numerator(), a.Denominator());
-#else
-#  pragma message("not supported")
-  return 1;
-#endif
 }

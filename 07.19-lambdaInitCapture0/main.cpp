@@ -9,5 +9,5 @@ int main()
   ] { return y; };
 
   auto l2 = [x = x  // #B The same name of x inside the lambda
-  ] { return x; };  // #C Here x refers to the x of the lambda, not one in the outer scope
+  ] { return x; };  // #C Here x refers to the x of the lambda, not to the x in the outer scope
 }

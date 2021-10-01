@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <string>
 
-#if not defined(_MSC_VER) && not defined(__clang__)
+#if not defined(__clang__)
 struct Address {
   std::string city;
   std::string street;

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #if __has_include(<format>) && not (defined(__GNUC__) && !defined(__clang__))
+#  include <algorithm>
 #  include <array>
 #  include <format>
 #  include <iostream>

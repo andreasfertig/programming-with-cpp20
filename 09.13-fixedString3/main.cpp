@@ -7,10 +7,7 @@
 #include <cstddef>
 #include <span>
 
-#if(__cpp_nontype_template_parameter_class >= 201806) &&             \
-  (__cpp_nontype_template_args >= 201911) &&                         \
-  not defined(_MSC_VER) &&                                           \
-  not(defined(__GNUC__) && !defined(__clang__))
+#if not defined(_MSC_VER) && __has_include(<ranges>)
 
 template<typename CharT, std::size_t N>
 struct fixed_string {
@@ -95,9 +92,10 @@ void print(auto fmt, const Ts&... ts)
 
   // #B Check that specifier matches type
   static_assert(
-    IsMatching<std::decay_t<decltype(
-                 fmt.fmt.data[0])>,  // #C Get the  underlying type
-               Ts...                 // #D Expand the types pack
+    IsMatching<std::decay_t<decltype(fmt.fmt.data[0])>,  // #C Get the
+                                                         // underlying
+                                                         // type
+               Ts...  // #D Expand the types pack
                >(fmt.fmt.data));
 
   printf(fmt, ts...);

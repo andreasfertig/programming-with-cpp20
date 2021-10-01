@@ -28,8 +28,8 @@ public:
 
   ~optional() = default;
 
-  optional(const optional&) requires std::is_copy_constructible_v<T> =
-    default;
+  optional(const optional&) requires std::is_copy_constructible_v<T>
+  = default;
 
 private:
   storage_t<T> value;

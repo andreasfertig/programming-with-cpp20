@@ -36,8 +36,8 @@ concept ClassWithType = not std::is_class_v<T> || requires
 };
 
 template<typename T, typename... Args>
-requires Addable<T, Args...>&& are_same_v<T, Args...>&&
-  PackHasElements<Args...>&& AddReturnsSameType<T>&& ClassWithType<T>
+requires Addable<T, Args...> && are_same_v<T, Args...> &&
+  PackHasElements<Args...> && AddReturnsSameType<T> && ClassWithType<T>
 
     Addable auto add(T&& arg, Args&&... args)
 // ...

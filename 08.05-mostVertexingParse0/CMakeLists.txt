@@ -85,7 +85,8 @@ else()
 
     else()
       add_definitions(-fcoroutines) # required for GCC-10    
-      
+      add_definitions(-Wno-vexing-parse)
+
     endif()
 endif()
 

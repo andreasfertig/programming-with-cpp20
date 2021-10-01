@@ -6,7 +6,8 @@
 template<typename T, typename U>
 concept IsSame = std::is_same_v<T, U>;
 
-namespace variableTemplate {
+namespace variableTemplate
+{
   template<typename T, typename U>
   constexpr bool IsSame = std::is_same_v<T, U>;
 

@@ -36,12 +36,12 @@ public:
   ~optional() requires NotTriviallyDestructible<T>;
 
   // #B If not trivially destructible and has Release method
-  ~optional() requires NotTriviallyDestructible<T>&& HasRelease<T>;
+  ~optional() requires NotTriviallyDestructible<T> && HasRelease<T>;
 
   ~optional() = default;
 
-  optional(const optional&) requires std::is_copy_constructible_v<T> =
-    default;
+  optional(const optional&) requires std::is_copy_constructible_v<T>
+  = default;
 
 private:
   union storage_t {
@@ -69,8 +69,8 @@ optional<T>::~optional() requires NotTriviallyDestructible<T>
 }
 
 template<typename T>
-optional<T>::~optional() requires NotTriviallyDestructible<
-  T>&& HasRelease<T>
+optional<T>::~optional() requires NotTriviallyDestructible<T> &&
+  HasRelease<T>
 {
   if(has_value) {
     value.as()->Release();
