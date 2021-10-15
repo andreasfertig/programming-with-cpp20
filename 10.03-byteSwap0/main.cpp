@@ -22,8 +22,8 @@ constexpr auto ReverseBytes(std::integral auto value)
 
 constexpr auto ByteSwap(std::integral auto value)
 {
-  if constexpr(std::endian::native == std::endian::big ||
-               (sizeof(value) == 1)) {
+  if constexpr((std::endian::native == std::endian::big) ||
+               (sizeof(value) == 1)) {  // #B chars don't need swapping
     return value;
   } else {
     return ReverseBytes(value);

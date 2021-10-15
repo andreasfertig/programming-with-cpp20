@@ -10,7 +10,7 @@
 
 int main()
 {
-  float          pi  = 3.14f;
+  const float    pi  = 3.14f;
   const uint32_t pii = std::bit_cast<uint32_t>(pi);
 }
 #else
