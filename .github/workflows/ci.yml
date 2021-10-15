@@ -107,7 +107,7 @@ jobs:
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
         sudo ./llvm.sh ${{ matrix.config.clang_version }}
-        sudo apt-get install -y libunwind-dev
+        sudo apt-get install -y libunwind-${{ matrix.config.clang_version }}-dev libunwind-${{ matrix.config.clang_version }}
 
     - name: Install g++ 11
       id: install_gcc_11

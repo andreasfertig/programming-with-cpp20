@@ -4,8 +4,7 @@
 #include <type_traits>
 #include <version>
 
-#if(__cpp_nontype_template_args >= 201911) &&                                  \
-  not(defined(__GNUC__) && !defined(__clang__)) && not defined(__clang__)
+#if(__cpp_nontype_template_args >= 201911) && not defined(__clang__)
 template<double x>
 struct A;  // #A A type which uses double as NTTP
 
