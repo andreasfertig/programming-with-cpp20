@@ -3,6 +3,7 @@
 
 #include <cerrno>
 #include <cstdio>
+#include <string_view>
 
 int open(const char*)
 {
@@ -15,10 +16,10 @@ struct ReturnCode {
   int err;
 };
 
-auto Open(const char* fileName)
+auto Open(std::string_view fileName)
 {
   // #B We need to specify the type of the template parameter
-  return ReturnCode<int>{open(fileName), errno};
+  return ReturnCode<int>{open(fileName.data()), errno};
 }
 
 int main()

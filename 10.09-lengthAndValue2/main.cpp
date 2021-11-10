@@ -10,7 +10,7 @@ bool write(const char*, size_t)
   return true;
 }
 
-bool Send(const std::span<char>& data);
+bool Send(std::span<const char> data);
 void Read(std::span<char> data);
 
 void Use()
@@ -28,7 +28,7 @@ void Use()
   Send(buffer2);
 }
 
-bool Send(const std::span<char>& data)
+bool Send(std::span<const char> data)
 {
   return write(data.data(), data.size());
 }

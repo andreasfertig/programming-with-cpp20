@@ -7,7 +7,10 @@
 struct fixed_string {
   char data[5]{};
 
-  constexpr fixed_string(const char* str) { std::copy_n(str, 5, data); }
+  constexpr fixed_string(const char* str)
+  {
+    std::copy_n(str, 5, data);
+  }
 };
 
 int main()

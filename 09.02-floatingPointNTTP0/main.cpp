@@ -16,7 +16,8 @@ static_assert(not std::is_same_v<A<+0.0>, A<-0.0>>);
 
 static_assert(+0.0 == -0.0);  // #D IEEE 754 says they are equal
 
-static_assert(std::is_same_v<A<0.1 + 0.1>, A<0.2>>);  // #E Same bit pattern
+// #E Same bit pattern
+static_assert(std::is_same_v<A<0.1 + 0.1>, A<0.2>>);
 
 int main() {}
 #else

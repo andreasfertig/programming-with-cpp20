@@ -1,7 +1,7 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>)
+#if __has_include(<format>) and not defined(__clang__)
 #  include <format>
 #  include <iomanip>
 #  include <iostream>
@@ -47,18 +47,24 @@ void WithStdFormat()
 void WithStdFormatUseArgumentIndex()
 {
   for(const auto& share : GetShares()) {
-    std::cout << std::format("{1:10} {2:>8.2f}{0} {3:>+8.2f}{0}\n",
-                             "€",
-                             share.name(),
-                             share.price(),
-                             share.priceDelta());
+    std::cout << std::format(
+      "{1:10} {2:>8.2f}{0} {3:>+8.2f}{0}\n",
+      "€",
+      share.name(),
+      share.price(),
+      share.priceDelta());
   }
+}
+
+void Use()
+{
+  WithStdFormat();
+  WithStdFormatUseArgumentIndex();
 }
 
 int main()
 {
-  WithStdFormat();
-  WithStdFormatUseArgumentIndex();
+  Use();
 }
 
 #else

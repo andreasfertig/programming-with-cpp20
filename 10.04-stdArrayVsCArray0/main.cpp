@@ -6,6 +6,7 @@
 
 int main()
 {
-  char cArray[]{"Hello, C++20"};               // #A Compiler deduces the size
-  std::array<char, 13> array{"Hello, C++20"};  // #B We need to specify the size
+  const char cArray[]{"Hello, C++20"};  // #A Compiler deduces the size
+  // #B We need to specify the size
+  const std::array<char, 13> array{"Hello, C++20"};
 }

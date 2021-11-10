@@ -23,10 +23,10 @@ void print(First&& first, Rest&&... args)
 }
 
 template<typename... Origins>
-auto getNamedLogger(Origins... origins)
+auto getNamedLogger(Origins&&... origins)
 {
   return [... _origins = std::forward<Origins>(
-            origins)]<typename... Ts>(Ts... args)
+            origins)]<typename... Ts>(Ts && ... args)
   {
     print(_origins..., std::forward<Ts>(args)...);
   };

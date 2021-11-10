@@ -24,27 +24,28 @@ void print(First&& first, Rest&&... args)
 }
 
 template<typename... Origins>
-auto getNamedLogger(Origins... origins)
+auto getNamedLogger(Origins&&... origins)
 {
-  return
-    [... _origins =
-        std::forward<Origins>(origins)]<typename... Ts>(Ts... args)
-    // #A Trailing requires with disjunction and is_pointer to limit Origins to no pointers
-    requires(not std::disjunction_v<std::is_pointer<Origins>...>)
+  return [... _origins = std::forward<Origins>(
+            origins)]<typename... Ts>(Ts && ... args)
+    // #A Trailing requires with disjunction and is_pointer  to
+    // limit  Origins to no pointers
+    requires(
+      not std::disjunction_v<std::is_pointer<Origins>...>)
   {
     print(_origins..., std::forward<Ts>(args)...);
   };
 }
 
-
 int main()
 {
   auto steeringLogger = getNamedLogger("Steering"s);
-  auto breakLogger    = getNamedLogger("Breaks"s, "Left"s, "Front"s);
+  auto breakLogger =
+    getNamedLogger("Breaks"s, "Left"s, "Front"s);
 
   steeringLogger("angle"s, 90);
 }
 #else
 #  pragma message("not supported")
-int main(){}
+int main() {}
 #endif

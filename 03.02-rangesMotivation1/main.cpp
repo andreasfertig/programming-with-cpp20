@@ -9,5 +9,6 @@ int main()
   const std::string firstText{"Hello"};
   const std::string secondText{"Bello"};
 
-  const bool equal = std::equal(firstText.begin() + 3, firstText.end(), secondText.begin());
+  const bool equal = std::equal(
+    firstText.begin() + 3, firstText.end(), secondText.begin());
 }

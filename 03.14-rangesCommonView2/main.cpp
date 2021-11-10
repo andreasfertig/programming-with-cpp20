@@ -1,7 +1,7 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<ranges>)
+#if __has_include(<ranges>) and not defined(__clang__)
 #  include <iostream>
 #  include <numeric>
 #  include <ranges>

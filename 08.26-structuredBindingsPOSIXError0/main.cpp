@@ -3,6 +3,7 @@
 
 #include <cerrno>
 #include <cstdio>
+#include <string_view>
 
 int open(const char*)
 {
@@ -14,9 +15,9 @@ struct ReturnCode {
   int err;
 };
 
-auto Open(const char* fileName)
+auto Open(std::string_view fileName)
 {
-  return ReturnCode{open(fileName), errno};
+  return ReturnCode{open(fileName.data()), errno};
 }
 
 int main()

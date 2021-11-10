@@ -4,7 +4,9 @@
 #include <algorithm>
 #include <cassert>
 #include <compare>
+#include <utility>
 
+#if not defined(__clang__)
 class String {
 public:
   template<size_t N>
@@ -22,8 +24,8 @@ public:
   {
     if(mLen != other.mLen) { return false; }
 
-    return std::is_eq(  // #A Using a named comparison function
-      Compare(*this, other));
+    // #A Using a named comparison function
+    return std::is_eq(Compare(*this, other));
   }
 
 private:
@@ -46,11 +48,11 @@ std::weak_ordering String::Compare(const String& a, const String& b)
   return std::weak_ordering::greater;
 }
 
-#define CMP_PRINT(op, expected)                                                \
-  {                                                                            \
-    const bool res = (op);                                                     \
-    assert(res == expected);                                                   \
-  }
+#  define CMP_PRINT(op, expected)                                              \
+    {                                                                          \
+      const bool res = (op);                                                   \
+      assert(res == expected);                                                 \
+    }
 
 int main()
 {
@@ -75,3 +77,18 @@ int main()
   CMP_PRINT(a > e, false);
   CMP_PRINT(a < e, true);
 }
+
+#else
+
+#  define CMP_PRINT(op, expected)                                              \
+    {                                                                          \
+      const bool res = (op);                                                   \
+      assert(res == expected);                                                 \
+    }
+
+int main()
+{
+#  pragma message("not supported")
+}
+
+#endif

@@ -1,7 +1,8 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>) && not defined(_MSC_VER)
+#if __has_include(                                                   \
+  <format>) and not defined(__clang__) && not defined(_MSC_VER)
 #  include <format>
 #  include <iomanip>
 #  include <iostream>
@@ -19,7 +20,7 @@ public:
   : mName{name}
   {}
 
-  std::string name() const { return mName; }
+  const std::string& name() const { return mName; }
 
   void setPoints(double points)
   {
@@ -57,7 +58,10 @@ std::vector<StockIndex> GetIndices()
 
 template<>
 struct std::formatter<StockIndex> {
-  constexpr auto parse(format_parse_context& ctx) { return ctx.begin(); }
+  constexpr auto parse(format_parse_context& ctx)
+  {
+    return ctx.begin();
+  }
 
   auto format(const StockIndex& index, format_context& ctx)
   {
@@ -70,11 +74,16 @@ struct std::formatter<StockIndex> {
   }
 };
 
-int main()
+void Use()
 {
   for(const auto& index : GetIndices()) {
     std::cout << std::format("{}\n", index);
   }
+}
+
+int main()
+{
+  Use();
 }
 
 #else

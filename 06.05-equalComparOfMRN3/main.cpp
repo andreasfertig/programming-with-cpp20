@@ -10,7 +10,8 @@ public:
   : mMRN{mrn}
   {}
 
-  bool operator==(const MedicalRecordNumber& other) const = default;
+  bool
+  operator==(const MedicalRecordNumber& other) const = default;
   bool operator==(const uint64_t& other) const
   {
     return other == mMRN;

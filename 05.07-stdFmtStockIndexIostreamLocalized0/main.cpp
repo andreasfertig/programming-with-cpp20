@@ -16,7 +16,7 @@ public:
   : mName{name}
   {}
 
-  std::string name() const { return mName; }
+  const std::string& name() const { return mName; }
 
   void setPoints(double points)
   {
@@ -52,16 +52,23 @@ std::vector<StockIndex> GetIndices()
   return {dax, dow, sp};
 }
 
-int main()
+void Use()
 {
   for(const auto& index : GetIndices()) {
     std::cout << std::fixed;
     std::cout << std::setprecision(2);
-    std::cout.imbue(std::locale("de_DE.UTF-8"));  // #A Apply the desired locale
+    // #A Apply the desired locale
+    std::cout.imbue(std::locale("de_DE.UTF-8"));
 
-    std::cout << std::setw(10) << std::left << index.name() << "  "
-              << std::setw(8) << std::right << index.points() << "  "
-              << std::setw(6) << index.pointsDiff() << " "
+    std::cout << std::setw(10) << std::left << index.name()
+              << "  " << std::setw(8) << std::right
+              << index.points() << "  " << std::setw(6)
+              << index.pointsDiff() << " "
               << index.pointsPercent() << '%' << '\n';
   }
+}
+
+int main()
+{
+  Use();
 }

@@ -12,11 +12,16 @@ struct Point {
   int z;
 };
 
+void Use()
+{
+  auto pt = std::make_unique<Point>(4, 5);
+}
+
 const auto* pt = new Point(4, 5);
 
 int main()
 {
-  auto pt = std::make_unique<Point>(4, 5);
+  Use();
 }
 #else
 int main()

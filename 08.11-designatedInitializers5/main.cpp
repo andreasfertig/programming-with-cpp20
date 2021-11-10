@@ -21,8 +21,8 @@ auto GetVectorOfPoints()
 {
   std::vector<Point> points{};
 
-  points.emplace_back(
-    Point{.y = 5, .z = 6});  // #A Create a Point in-place of a container
+  // #A Create a Point in-place of a container
+  points.emplace_back(Point{.y = 5, .z = 6});
 
   return points;
 }

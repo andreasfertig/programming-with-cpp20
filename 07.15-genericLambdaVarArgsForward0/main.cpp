@@ -23,16 +23,17 @@ auto getNamedLogger(const std::string origin)
 {
   return [=](auto... args) {
     print(origin,
-          std::forward<decltype(args)>(
-            args)...  // #A Forward the arguments using\newline decltype to retrieve the type
-    );
+          // #A Forward the arguments using decltype to retrieve the type
+          std::forward<decltype(args)>(args)...);
   };
 }
 
 int main()
 {
-  auto steeringLogger = getNamedLogger("Steering"s);  // #A Logger for steering
-  auto breakLogger    = getNamedLogger("Breaks"s);    // #B Logger for breaks
+  // #A Logger for steering
+  auto steeringLogger = getNamedLogger("Steering"s);
+  // #B Logger for breaks
+  auto breakLogger = getNamedLogger("Breaks"s);
 
   steeringLogger("angle"s, 90);  // #C Log a steering-related message
 }

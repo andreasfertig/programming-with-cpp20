@@ -1,7 +1,7 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>)
+#if __has_include(<format>) and not defined(__clang__)
 #  include <format>
 #  include <iomanip>
 #  include <iostream>
@@ -19,7 +19,7 @@ public:
   : mName{name}
   {}
 
-  std::string name() const { return mName; }
+  const std::string& name() const { return mName; }
 
   void setPoints(double points)
   {
@@ -70,17 +70,19 @@ void WithIostreamAdvanced()
 {
   for(const auto& index : GetIndices()) {
     std::cout << std::fixed;
-    std::cout << std::setprecision(
-      2);  // #A We need <iomanip> for this
+    // #A We need <iomanip> for this
+    std::cout << std::setprecision(2);
 
-    std::cout << std::setw(10) << std::left << index.name() << "  "
-              << std::setw(8) << std::right << index.points() << "  "
-              << std::setw(6) << index.pointsDiff() << " "
+    std::cout << std::setw(10) << std::left << index.name()
+              << "  " << std::setw(8) << std::right
+              << index.points() << "  " << std::setw(6)
+              << index.pointsDiff() << " "
               << index.pointsPercent() << '%' << '\n';
   }
 }
 
-std::ostream& operator<<(std::ostream& os, const StockIndex& index)
+std::ostream& operator<<(std::ostream&     os,
+                         const StockIndex& index)
 {
   os << std::fixed;
   os << std::setprecision(2);
@@ -105,15 +107,16 @@ namespace withLocale {
 void WithStdFormat()
 {
   for(const auto& index : GetIndices()) {
-    std::cout << std::format("{:10}  {:>8.2f}  {:>6.2f} {:.2f}%\n",
-                             index.name(),
-                             index.points(),
-                             index.pointsDiff(),
-                             index.pointsPercent());
+    std::cout << std::format(
+      "{:10}  {:>8.2f}  {:>6.2f} {:.2f}%\n",
+      index.name(),
+      index.points(),
+      index.pointsDiff(),
+      index.pointsPercent());
   }
 }
 
-int main()
+void Use()
 {
   WithPrintf();
   std::cout << '\n';
@@ -127,6 +130,11 @@ int main()
 
   std::cout << '\n';
   WithStdFormat();
+}
+
+int main()
+{
+  Use();
 }
 
 #else

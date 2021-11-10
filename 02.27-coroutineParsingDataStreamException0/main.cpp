@@ -89,9 +89,12 @@ struct promise_type_base {
       if(2 == rethrow) {
         auto exceptionPtr = std::current_exception();
         try {
-          if(exceptionPtr) { std::rethrow_exception(exceptionPtr); }
+          if(exceptionPtr) {
+            std::rethrow_exception(exceptionPtr);
+          }
         } catch(const std::exception& e) {
-          std::cout << "Caught exception \"" << e.what() << "\"\n";
+          std::cout << "Caught exception \"" << e.what()
+                    << "\"\n";
         }
       } else {
         throw;
@@ -125,17 +128,26 @@ namespace coro_iterator {
 
     void operator++() { resume(); }
 
-    bool           operator==(const iterator&) const { return mCoroHdl.done(); }
-    const RetType& operator*() const { return mCoroHdl.promise().mValue; }
+    bool operator==(const iterator&) const
+    {
+      return mCoroHdl.done();
+    }
+    const RetType& operator*() const
+    {
+      return mCoroHdl.promise().mValue;
+    }
   };
 }  // namespace coro_iterator
 
 template<typename T, bool IntialSuspend = true>  // #A New NTTP
 struct generator {
   using promise_type =
-    promise_type_base<T, generator, IntialSuspend>;  // #B Forward IntialSuspend
+    promise_type_base<T,
+                      generator,
+                      IntialSuspend>;  // #B Forward
+                                       // IntialSuspend
   using PromiseTypeHandle = std::coroutine_handle<promise_type>;
-  using iterator          = coro_iterator::iterator<promise_type>;
+  using iterator = coro_iterator::iterator<promise_type>;
 
   iterator begin() { return {mCoroHdl}; }
   iterator end() { return {}; }
@@ -160,7 +172,8 @@ struct generator {
   }
 
 private:
-  friend promise_type;  // #A As the default ctor is private we G needs to be a friend
+  friend promise_type;  // #A As the default ctor is private we
+                        // G needs to be a friend
   explicit generator(promise_type* p)
   : mCoroHdl(PromiseTypeHandle::from_promise(*p))
   {}
@@ -175,7 +188,8 @@ public:
   DataStreamReader() = default;
 
   // #B Using DesDeMovA to disable copy and move operations
-  DataStreamReader& operator=(DataStreamReader&&) noexcept = delete;
+  DataStreamReader&
+  operator=(DataStreamReader&&) noexcept = delete;
 
   struct Awaiter {  // #C Awaiter implementation
     Awaiter& operator=(Awaiter&&) noexcept = delete;
@@ -185,7 +199,10 @@ public:
       mEvent.mAwaiter = this;
     }
 
-    bool await_ready() const noexcept { return mEvent.mData.has_value(); }
+    bool await_ready() const noexcept
+    {
+      return mEvent.mData.has_value();
+    }
 
     void await_suspend(std::coroutine_handle<> coroHdl) noexcept
     {
@@ -273,6 +290,45 @@ generator<byte> sender(std::vector<byte> fakeBytes)
 void HandleFrame(const std::string& frame);
 void PrintException(std::runtime_error& rt);
 
+void Use()
+{
+  std::vector<byte> fakeBytes1{0x70_B,
+                               ESC,
+                               SOF,
+                               ESC,
+                               'H'_B,
+                               'e'_B,
+                               'l'_B,
+                               'l'_B,
+                               'o'_B,
+                               ESC,
+                               SOF,
+                               0x7_B,
+                               ESC,
+                               SOF};
+
+  std::vector<byte> fakeBytes2{
+    'W'_B, 'o'_B, 'r'_B, 'l'_B, 'd'_B, ESC, SOF, 0x99_B};
+
+  try {  // #A Wrap it in a try-catch block
+    auto stream1 = sender(std::move(fakeBytes1));
+
+    DataStreamReader dr{};
+    auto             p = Parse(dr);
+
+    for(const auto& b : stream1) {
+      dr.set(b);
+
+      if(const auto& res = p(); res.length()) {
+        HandleFrame(res);
+      }
+    }
+    // #B Listen for a runtime error
+  } catch(std::runtime_error& rt) {
+    PrintException(rt);
+  }
+}
+
 void HandleFrame(const std::string& frame)
 {
   printf("%s\n", frame.c_str());
@@ -302,23 +358,5 @@ int main(int argc, char* argv[])
     }
   }
 
-  std::vector<byte> fakeBytes1{
-    0x70_B, ESC, SOF, ESC, 'H'_B, 'e'_B, 'l'_B, 'l'_B, 'o'_B, ESC, SOF, 0x7_B, ESC, SOF};
-
-  std::vector<byte> fakeBytes2{'W'_B, 'o'_B, 'r'_B, 'l'_B, 'd'_B, ESC, SOF, 0x99_B};
-
-  try {  // #A Wrapp it in a try-catch block
-    auto stream1 = sender(std::move(fakeBytes1));
-
-    DataStreamReader dr{};
-    auto             p = Parse(dr);
-
-    for(const auto& b : stream1) {
-      dr.set(b);
-
-      if(const auto& res = p(); res.length()) { HandleFrame(res); }
-    }
-  } catch(std::runtime_error& rt) {  // #B Listen for a runtime error
-    PrintException(rt);
-  }
+  Use();
 }

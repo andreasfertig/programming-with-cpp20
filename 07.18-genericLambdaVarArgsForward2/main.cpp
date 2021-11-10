@@ -21,9 +21,9 @@ void print(First&& first, Rest&&... args)
 }
 
 template<typename... Origins>
-auto getNamedLogger(Origins... origins)
+auto getNamedLogger(Origins&&... origins)
 {
-  return [=]<typename... Ts>(Ts... args)
+  return [=]<typename... Ts>(Ts && ... args)
   {
     print(origins..., std::forward<Ts>(args)...);
   };

@@ -42,7 +42,8 @@ void* arena::Allocate(size_t sz) noexcept
 
   char* ptr = new char[sz];
 
-  [[maybe_unused]] arena* a = reinterpret_cast<arena*>(ptr + osz);
+  [[maybe_unused]] arena* a =
+    reinterpret_cast<arena*>(ptr + osz);
 
   a = this;
 
@@ -85,12 +86,13 @@ struct promise_type_base {
 
   std::suspend_always final_suspend() noexcept { return {}; }
   G                   get_return_object() { return G{this}; };
-  void                unhandled_exception() { std::terminate(); }
+  void                unhandled_exception();
   void                return_void() {}
 
   // #A Custom operator new
   template<typename... TheRest>
-  void* operator new(size_t size, arena& a, TheRest&&...) noexcept
+  void*
+  operator new(size_t size, arena& a, TheRest&&...) noexcept
   {
     return a.Allocate(size);
   }
@@ -101,8 +103,18 @@ struct promise_type_base {
     arena::GetFromPtr(ptr, size)->Deallocate(ptr, size);
   }
 
-  static auto get_return_object_on_allocation_failure() { return G{nullptr}; }
+  static auto get_return_object_on_allocation_failure()
+  {
+    return G{nullptr};
+  }
 };
+
+template<typename T, typename G, bool InitialSuspend>
+void promise_type_base<T, G, InitialSuspend>::
+  unhandled_exception()
+{
+  std::terminate();
+}
 
 namespace coro_iterator {
   template<typename PT>
@@ -125,17 +137,26 @@ namespace coro_iterator {
 
     void operator++() { resume(); }
 
-    bool           operator==(const iterator&) const { return mCoroHdl.done(); }
-    const RetType& operator*() const { return mCoroHdl.promise().mValue; }
+    bool operator==(const iterator&) const
+    {
+      return mCoroHdl.done();
+    }
+    const RetType& operator*() const
+    {
+      return mCoroHdl.promise().mValue;
+    }
   };
 }  // namespace coro_iterator
 
 template<typename T, bool IntialSuspend = true>  // #A New NTTP
 struct generator {
   using promise_type =
-    promise_type_base<T, generator, IntialSuspend>;  // #B Forward IntialSuspend
+    promise_type_base<T,
+                      generator,
+                      IntialSuspend>;  // #B Forward
+                                       // IntialSuspend
   using PromiseTypeHandle = std::coroutine_handle<promise_type>;
-  using iterator          = coro_iterator::iterator<promise_type>;
+  using iterator = coro_iterator::iterator<promise_type>;
 
   iterator begin() { return {mCoroHdl}; }
   iterator end() { return {}; }
@@ -160,7 +181,8 @@ struct generator {
   }
 
 private:
-  friend promise_type;  // #A As the default ctor is private we G needs to be a friend
+  friend promise_type;  // #A As the default ctor is private we
+                        // G needs to be a friend
   explicit generator(promise_type* p)
   : mCoroHdl(PromiseTypeHandle::from_promise(*p))
   {}
@@ -175,7 +197,8 @@ public:
   DataStreamReader() = default;
 
   // #B Using DesDeMovA to disable copy and move operations
-  DataStreamReader& operator=(DataStreamReader&&) noexcept = delete;
+  DataStreamReader&
+  operator=(DataStreamReader&&) noexcept = delete;
 
   struct Awaiter {  // #C Awaiter implementation
     Awaiter& operator=(Awaiter&&) noexcept = delete;
@@ -185,7 +208,10 @@ public:
       mEvent.mAwaiter = this;
     }
 
-    bool await_ready() const noexcept { return mEvent.mData.has_value(); }
+    bool await_ready() const noexcept
+    {
+      return mEvent.mData.has_value();
+    }
 
     void await_suspend(std::coroutine_handle<> coroHdl) noexcept
     {
@@ -226,7 +252,9 @@ using FSM = generator<std::string, false>;
 static const byte ESC{'H'};
 static const byte SOF{0x10};
 
-FSM Parse(arena& a, DataStreamReader& stream)  // #A Pass the stream a parameter
+FSM Parse(
+  arena&            a,
+  DataStreamReader& stream)  // #A Pass the stream a parameter
 {
   while(true) {
     byte        b = co_await stream;  // #B Await on the stream
@@ -268,17 +296,25 @@ generator<byte> sender(arena& a, std::vector<byte> fakeBytes)
 
 void HandleFrame(const std::string& frame);
 
-void HandleFrame(const std::string& frame)
+void Use()
 {
-  printf("%s\n", frame.c_str());
-}
+  std::vector<byte> fakeBytes1{0x70_B,
+                               ESC,
+                               SOF,
+                               ESC,
+                               'H'_B,
+                               'e'_B,
+                               'l'_B,
+                               'l'_B,
+                               'o'_B,
+                               ESC,
+                               SOF,
+                               0x7_B,
+                               ESC,
+                               SOF};
 
-int main()
-{
-  std::vector<byte> fakeBytes1{
-    0x70_B, ESC, SOF, ESC, 'H'_B, 'e'_B, 'l'_B, 'l'_B, 'o'_B, ESC, SOF, 0x7_B, ESC, SOF};
-
-  std::vector<byte> fakeBytes2{'W'_B, 'o'_B, 'r'_B, 'l'_B, 'd'_B, ESC, SOF, 0x99_B};
+  std::vector<byte> fakeBytes2{
+    'W'_B, 'o'_B, 'r'_B, 'l'_B, 'd'_B, ESC, SOF, 0x99_B};
 
   arena a1{};
   arena a2{};
@@ -286,20 +322,41 @@ int main()
   // #A Pass the arena to sender
   auto stream1 = sender(a1, std::move(fakeBytes1));
 
-  DataStreamReader dr{};   // #B Create a DataStreamReader Awaitable
-  auto p = Parse(a2, dr);  // #C Create the Parse coroutine and pass the DataStreamReader
+  DataStreamReader
+       dr{};  // #B Create a DataStreamReader Awaitable
+  auto p = Parse(a2, dr);  // #C Create the Parse coroutine and
+                           // pass the DataStreamReader
 
   for(const auto& b : stream1) {
-    dr.set(b);  // #D Send the new byte to the waiting DataStreamReader
+    dr.set(b);  // #D Send the new byte to the waiting
+                // DataStreamReader
 
-    if(const auto& res = p(); res.length()) { HandleFrame(res); }
+    if(const auto& res = p(); res.length()) {
+      HandleFrame(res);
+    }
   }
 
-  auto stream2 = sender(a1, std::move(fakeBytes2));  // #E Simulate a second network stream
+  auto stream2 = sender(
+    a1,
+    std::move(
+      fakeBytes2));  // #E Simulate a second network stream
 
   for(const auto& b : stream2) {
-    dr.set(b);  // #F We still use the former dr and p and feed it with new bytes
+    dr.set(b);  // #F We still use the former dr and p and feed
+                // it with new bytes
 
-    if(const auto& res = p(); res.length()) { HandleFrame(res); }
+    if(const auto& res = p(); res.length()) {
+      HandleFrame(res);
+    }
   }
+}
+
+void HandleFrame(const std::string& frame)
+{
+  printf("%s\n", frame.c_str());
+}
+
+int main()
+{
+  Use();
 }

@@ -7,7 +7,7 @@
 #include <cstddef>
 #include <iostream>
 
-#if __has_include(<ranges>)
+#if __has_include(<ranges>) and not defined(__clang__)
 template<typename CharT, std::size_t N>
 struct fixed_string {
   CharT data[N]{};
@@ -36,14 +36,13 @@ constexpr auto operator"" _fs()
   return FormatString<Str>{};
 }
 
-template<typename... Ts>
-void print(auto fmt, const Ts&... ts)
+void print(auto fmt, const auto&... args)
 {
   // #A Use the count of arguments and compare it to the size of  the
   // pack
-  static_assert(fmt.numArgs == sizeof...(Ts));
+  static_assert(fmt.numArgs == sizeof...(args));
 
-  printf(fmt, ts...);
+  printf(fmt, args...);
 }
 
 void Use()

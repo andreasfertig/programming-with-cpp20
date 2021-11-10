@@ -27,7 +27,7 @@ std::byte operator""_B(unsigned long long c)
 }
 
 template<typename T, typename G, 
-    typename... Bases>  // #A Allow multiple bases for awaiter
+         typename... Bases>  // #A Allow multiple bases for awaiter
 struct promise_type_base : public Bases... {
   T mValue;
 
@@ -42,7 +42,8 @@ struct promise_type_base : public Bases... {
   std::suspend_always initial_suspend() { return {}; }
   std::suspend_always final_suspend() noexcept { return {}; }
   void                return_void() {}
-  void                unhandled_exception() { std::terminate(); }
+  void                unhandled_exception() 
+                      { std::terminate(); }
 };
 
 
@@ -103,15 +104,17 @@ struct awaitable_promise_type_base {
     }
   };
 
-  [[nodiscard]] awaiter await_transform(T) { return awaiter{mRecentSignal}; }
+  [[nodiscard]] awaiter await_transform(T) 
+  { return awaiter{mRecentSignal}; }
 };
 
 
 template<typename T, typename U>
 struct [[nodiscard]] async_generator
 {
-  using promise_type = promise_type_base<T, async_generator, 
-                                         awaitable_promise_type_base<U>>;
+  using promise_type = promise_type_base<T, 
+                                async_generator, 
+                                awaitable_promise_type_base<U>>;
   using PromiseTypeHandle = std::coroutine_handle<promise_type>;
 
   T operator()()
@@ -131,8 +134,8 @@ struct [[nodiscard]] async_generator
     if(not mCoroHdl.done()) { mCoroHdl.resume(); }
   }
 
-  async_generator(async_generator const&) = delete;
-  async_generator(async_generator && rhs)
+  async_generator(const async_generator&) = delete;
+  async_generator(async_generator&& rhs)
   : mCoroHdl{std::exchange(rhs.mCoroHdl, nullptr)}
   {}
 
@@ -143,7 +146,7 @@ struct [[nodiscard]] async_generator
 
 private:
   friend promise_type;  // #C As the default ctor is private G needs to be a friend
-  explicit async_generator(promise_type * p)
+  explicit async_generator(promise_type* p)
   : mCoroHdl(PromiseTypeHandle::from_promise(*p))
   {}
 
@@ -192,31 +195,29 @@ static const byte SOF{0x10};
 FSM Parse()
 {
   while(true) {
-    byte        b = co_await byte{};
-    std::string frame{};
+    byte b = co_await byte{};
+    if(ESC != b) { continue; }
 
-    if(ESC == b) {
+    b = co_await byte{};
+    if(SOF != b) { continue; }  // #A  not looking at a start sequence
+
+    std::string frame{};
+    while(true) {  // #B capture the full frame
       b = co_await byte{};
 
-      if(SOF != b) { continue; }  // #A  not looking at a start sequence
-
-      while(true) {  // #B capture the full frame
+      if(ESC == b) {
+        // #C skip this byte and look at the next one
         b = co_await byte{};
 
-        if(ESC == b) {
-          // #C skip this byte and look at the next one
-          b = co_await byte{};
-
-          if(SOF == b) {
-            co_yield frame;
-            break;
-          } else if(ESC != b) {  // #D out of sync
-            break;
-          }
+        if(SOF == b) {
+          co_yield frame;
+          break;
+        } else if(ESC != b) {  // #D out of sync
+          break;
         }
-
-        frame += static_cast<char>(b);
       }
+
+      frame += static_cast<char>(b);
     }
   }
 }
@@ -233,13 +234,43 @@ void HandleFrame(const std::string& frame);
 void ProcessStream(generator<byte>& stream, FSM& parse)
 {
   for(const auto& b : stream) {
-    parse.SendSignal(b);  // #A Send the new byte to the waiting Parse coroutine
+    // #A Send the new byte to the waiting Parse coroutine
+    parse.SendSignal(b);  
 
     // #B Check whether we have a complete frame
-    if(const auto& res = parse(); res.length()) { HandleFrame(res); }
+    if(const auto& res = parse(); res.length()) { 
+        HandleFrame(res); 
+    }
   }
 }
 
+
+void Use()
+{
+std::vector<byte> fakeBytes1{
+    0x70_B, ESC, SOF, ESC, 
+    'H'_B, 'e'_B, 'l'_B, 'l'_B, 'o'_B, ESC, SOF, 
+    0x7_B, ESC, SOF};
+
+// #A Simulate the first network stream
+auto stream1 = sender(std::move(fakeBytes1));  
+
+// #B Create the Parse coroutine and store the handle in p
+auto p = Parse();
+
+ProcessStream(stream1, p);  // #C Process the bytes
+
+// #D Simulate the reopening of the network stream
+std::vector<byte> fakeBytes2{
+    'W'_B, 'o'_B, 'r'_B, 'l'_B, 'd'_B, ESC, SOF, 0x99_B};
+
+// #E Simulate a second network stream
+auto stream2 = sender(std::move(fakeBytes2));
+
+// #F We still use the former p and feed it with new bytes
+ProcessStream(stream2, p);
+
+}
 
 
 void HandleFrame(const std::string& frame)
@@ -249,31 +280,5 @@ void HandleFrame(const std::string& frame)
 
 int main()
 {
-  std::vector<byte> fakeBytes1{0x70_B,
-                             ESC,
-                             SOF,
-                             ESC,
-                             'H'_B,
-                             'e'_B,
-                             'l'_B,
-                             'l'_B,
-                             'o'_B,
-                             ESC,
-                             SOF,
-                             0x7_B,
-                             ESC,
-                             SOF};
-
-auto stream1 = sender(std::move(fakeBytes1));  // #A Simulate the first network stream
-
-auto p = Parse();  // #B Create the Parse coroutine and store the handle in p
-
-ProcessStream(stream1, p);  // #C Process the bytes
-
-// #D Simulate the reopening of the network stream
-std::vector<byte> fakeBytes2{'W'_B, 'o'_B, 'r'_B, 'l'_B, 'd'_B, ESC, SOF, 0x99_B};
-auto stream2 = sender(std::move(fakeBytes2));  // #E Simulate a second network stream
-
-ProcessStream(stream2, p);  // #F We still use the former p and feed it with new bytes
-
+  Use();
 }

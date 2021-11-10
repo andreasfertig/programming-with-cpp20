@@ -26,7 +26,7 @@ void Use(auto& c)
   begin(c);
 }
 
-int main()
+void Use()
 {
   Container c{};
 
@@ -35,4 +35,9 @@ int main()
   OtherContainer oc{};
 
   Use(oc);
+}
+
+int main()
+{
+  Use();
 }

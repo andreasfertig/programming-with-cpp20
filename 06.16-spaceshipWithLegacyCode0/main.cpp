@@ -7,13 +7,14 @@
 struct Legacy {
   int a;
 
-  // #A  These define a weak order
+  // #A These define a weak order
   bool operator==(const Legacy&) const;
   bool operator<(const Legacy&) const;
 };
 
 class ShinyCpp20Class {
-  Legacy mA, mB;
+  Legacy mA;
+  Legacy mB;
 
 public:
   ShinyCpp20Class(int a, int b);

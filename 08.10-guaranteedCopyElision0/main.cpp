@@ -3,13 +3,17 @@
 
 #include <vector>
 
-struct NonCopyableOrMoveable {  // #A Type is neither copy nor movable
-  NonCopyableOrMoveable()                             = default;
-  NonCopyableOrMoveable(const NonCopyableOrMoveable&) = delete;
-  NonCopyableOrMoveable(NonCopyableOrMoveable&&)      = delete;
-  NonCopyableOrMoveable& operator=(const NonCopyableOrMoveable&) = delete;
-  NonCopyableOrMoveable& operator=(NonCopyableOrMoveable&&) = delete;
-  ~NonCopyableOrMoveable()                                  = default;
+// #A Type is neither copy nor movable
+struct NonCopyableOrMoveable {
+  NonCopyableOrMoveable() = default;
+  NonCopyableOrMoveable(const NonCopyableOrMoveable&) =
+    delete;
+  NonCopyableOrMoveable(NonCopyableOrMoveable&&) = delete;
+  NonCopyableOrMoveable&
+  operator=(const NonCopyableOrMoveable&) = delete;
+  NonCopyableOrMoveable&
+  operator=(NonCopyableOrMoveable&&) = delete;
+  ~NonCopyableOrMoveable()           = default;
 };
 
 NonCopyableOrMoveable RVO()
@@ -19,7 +23,7 @@ NonCopyableOrMoveable RVO()
 
 void Use()
 {
-  // #C The return-object is created directly at myValue
+  // #C The return-object is created directly at  myValue
   auto myValue = RVO();
 }
 

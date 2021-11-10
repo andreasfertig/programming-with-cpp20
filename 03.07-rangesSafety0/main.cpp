@@ -3,7 +3,12 @@
 
 #include <string>
 
-int main()
+void Use()
 {
   auto it = std::begin(std::string{"Urg"});
+}
+
+int main()
+{
+  Use();
 }

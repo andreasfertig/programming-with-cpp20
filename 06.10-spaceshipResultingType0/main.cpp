@@ -9,7 +9,8 @@ struct Weak {
 };
 
 struct Strong {
-  std::strong_ordering operator<=>(const Strong&) const = default;
+  std::strong_ordering
+  operator<=>(const Strong&) const = default;
 };
 
 struct Combined {
@@ -23,5 +24,6 @@ int main()
 {
   Combined c;
 
-  static_assert(std::is_same_v<std::weak_ordering, decltype(c <=> c)>);
+  static_assert(
+    std::is_same_v<std::weak_ordering, decltype(c <=> c)>);
 }

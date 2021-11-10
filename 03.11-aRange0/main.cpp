@@ -4,14 +4,6 @@
 #include <cstdio>
 #include <iterator>
 
-#if not(defined(__GNUC__) && !defined(__clang__)) && not defined(_MSC_VER)
-// not present at the moment, no idea which paper brought it and if it is
-// detectable
-namespace std {
-  struct default_sentinel_t {};
-}  // namespace std
-#endif
-
 using T = int;
 
 struct Range {

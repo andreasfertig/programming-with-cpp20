@@ -26,7 +26,7 @@ void Use(auto& c)
   std::ranges::begin(c);
 }
 
-int main()
+void Use()
 {
   Container c{};
 
@@ -35,6 +35,11 @@ int main()
   OtherContainer oc{};
 
   Use(oc);
+}
+
+int main()
+{
+  Use();
 }
 
 #else

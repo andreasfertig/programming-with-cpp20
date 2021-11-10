@@ -1,14 +1,19 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>)
+#if __has_include(<format>) and not defined(__clang__)
 #  include <format>
 #  include <iostream>
 #  include <string>
 
-int main()
+void Use()
 {
   std::cout << std::format("Having the }} in a {}.", "string");
+}
+
+int main()
+{
+  Use();
 
   std::cout << '\n';
 }

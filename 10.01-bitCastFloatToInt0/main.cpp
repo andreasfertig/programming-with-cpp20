@@ -12,8 +12,8 @@ int main()
 
   uint32_t a = static_cast<uint32_t>(pi);  // #A Does not do what we want
   // uint32_t b = reinterpret_cast<uint32_t>(pi); // #B Does not compile
-  uint32_t c = *reinterpret_cast<uint32_t*>(
-    &pi);  // #C Uses type-punning, can result in UB
+  //  #C Uses type-punning, can result in UB
+  uint32_t c = *reinterpret_cast<uint32_t*>(&pi);
 
   union FloatOrInt {
     float    f;

@@ -3,13 +3,16 @@
 
 // use with LC_ALL=de_DE.UTF-8 ./a.out
 
-#if __has_include(<format>) && not defined(_MSC_VER)
+#if __has_include(                                             \
+  <format>) and not defined(__clang__) && not defined(_MSC_VER)
 #  include <format>
 #  include <iomanip>
 #  include <iostream>
 #  include <locale>
 #  include <string>
 #  include <vector>
+
+using namespace std::literals;
 
 class StockIndex {
   std::string mName{};
@@ -21,7 +24,7 @@ public:
   : mName{name}
   {}
 
-  std::string name() const { return mName; }
+  const std::string& name() const { return mName; }
 
   void setPoints(double points)
   {
@@ -60,17 +63,16 @@ std::vector<StockIndex> GetIndices()
 template<>
 struct std::formatter<StockIndex> {
   enum class IndexFormat { Normal, Short, WithPlus };
-
   IndexFormat indexFormat{IndexFormat::Normal};
-
-  bool localized =
-    false;  // #A New member to track whether the formatting is localized
+  // #A New member to track whether the formatting is  localized
+  bool localized = false;
 
   constexpr auto parse(format_parse_context& ctx)
   {
     auto it = ctx.begin();
 
-    auto isChar = [&](char c) {  // #B Helper to search for a character
+    // #B Helper to search for a character
+    auto isChar = [&](char c) {
       if((it != ctx.end()) && (*it == c)) {
         ++it;
         return true;
@@ -79,7 +81,8 @@ struct std::formatter<StockIndex> {
       return false;
     };
 
-    if(isChar('L')) { localized = true; }  // #C Localized formatting
+    // #C Localized formatting
+    if(isChar('L')) { localized = true; }
 
     if(isChar('s')) {
       indexFormat = IndexFormat::Short;
@@ -87,23 +90,30 @@ struct std::formatter<StockIndex> {
       indexFormat = IndexFormat::WithPlus;
     }
 
-    if(it != ctx.end() && *it != '}') { throw format_error("invalid format"); }
+    if(it != ctx.end() && *it != '}') {
+      throw format_error("invalid format");
+    }
 
     return it;
   }
 
   auto format(const StockIndex& index, format_context& ctx)
   {
-    const std::string locFloat{localized ? "L" : ""};  // #D Add localized
-    const std::string plus{(IndexFormat::WithPlus == indexFormat) ? "+" : ""};
+    // #D Add localized
+    const auto locFloat{localized ? "L"s : ""s};
+    const auto plus{
+      (IndexFormat::WithPlus == indexFormat) ? "+"s : ""s};
 
     if(IndexFormat::Short == indexFormat) {
-      const auto fmt = std::format("{{:10}} {{:>8.2{}f}}", locFloat);
-      return std::format_to(ctx.out(), fmt, index.name(), index.points());
+      const auto fmt =
+        std::format("{{:10}} {{:>8.2{}f}}", locFloat);
+      return std::format_to(
+        ctx.out(), fmt, index.name(), index.points());
 
     } else {
       const auto fmt{
-        std::format("{{:10}} {{:>8.2{0}f}}  {{:>{1}7.2{0}f}}  {{:{1}.2{0}f}}%",
+        std::format("{{:10}} {{:>8.2{0}f}}  {{:>{1}7.2{0}f}}  "
+                    "{{:{1}.2{0}f}}%",
                     locFloat,
                     plus)};
 
@@ -117,7 +127,7 @@ struct std::formatter<StockIndex> {
   }
 };
 
-int main()
+void Use()
 {
   for(const auto& index : GetIndices()) {
     std::cout << std::format("{:Ls}\n", index);
@@ -126,6 +136,11 @@ int main()
   for(const auto& index : GetIndices()) {
     std::cout << std::format("{:Lp}\n", index);
   }
+}
+
+int main()
+{
+  Use();
 }
 
 #else

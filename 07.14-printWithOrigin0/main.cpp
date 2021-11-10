@@ -28,6 +28,9 @@ int main()
   // #B Declaring a global variable for the steering origin
   static const auto originSteering{"Steering"s};
 
-  print(originSteering, "angle"s, 90);  // #C Ok, use of the global variable
-  print("steering"s, "angle"s, 75);     // #D Passing steering instead of Steering
+  // #C Ok, use of the global variable
+  print(originSteering, "angle"s, 90);
+
+  // #D Passing steering instead of Steering
+  print("steering"s, "angle"s, 75);
 }

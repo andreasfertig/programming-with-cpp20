@@ -5,5 +5,6 @@
 
 int main()
 {
-  std::vector a{2, 3, 4};  // #A Using std::vector without specifying a type
+  // #A Using std::vector without specifying a type
+  const std::vector a{2, 3, 4};
 }

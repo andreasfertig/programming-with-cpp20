@@ -16,7 +16,7 @@ public:
   : mName{name}
   {}
 
-  std::string name() const { return mName; }
+  const std::string& name() const { return mName; }
 
   void setPoints(double points)
   {
@@ -52,11 +52,16 @@ std::vector<StockIndex> GetIndices()
   return {dax, dow, sp};
 }
 
-int main()
+void Use()
 {
   for(const auto& index : GetIndices()) {
     std::cout << index.name() << " " << index.points() << "  "
-              << index.pointsDiff() << "  " << index.pointsPercent()
-              << '%' << '\n';
+              << index.pointsDiff() << "  "
+              << index.pointsPercent() << '%' << '\n';
   }
+}
+
+int main()
+{
+  Use();
 }

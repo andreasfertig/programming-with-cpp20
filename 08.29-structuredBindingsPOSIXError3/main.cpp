@@ -3,6 +3,7 @@
 
 #include <cerrno>
 #include <cstdio>
+#include <string_view>
 
 int open(const char*)
 {
@@ -24,10 +25,10 @@ private:
   int err;
 };
 
-auto Open(const char* fileName)
+auto Open(std::string_view fileName)
 {
   // #B Works without specifying a type
-  return ReturnCode{open(fileName), errno};
+  return ReturnCode{open(fileName.data()), errno};
 }
 
 int main()

@@ -10,7 +10,7 @@ public:
   : mValue{Adjust(v)}
   {}
 
-  // #A Make it convertible to int
+  // #A Make BCD convertible to int
   operator int() const { return mValue; }
 
   // #B Provide at least equality comparison

@@ -7,7 +7,8 @@
 #include <cstddef>
 #include <span>
 
-#if not defined(_MSC_VER) && __has_include(<ranges>)
+#if not defined(_MSC_VER) &&                                   \
+  __has_include(<ranges>) and not defined(__clang__)
 
 template<typename CharT, std::size_t N>
 struct fixed_string {
@@ -25,7 +26,8 @@ struct FormatString {
     Str;  // #B Store the string for easy access
 
   // #C Use ranges to count all the percent signs.
-  static constexpr auto numArgs = std::ranges::count(fmt.data, '%');
+  static constexpr auto numArgs =
+    std::ranges::count(fmt.data, '%');
 
   // #D For usability provide a conversion operator
   operator const auto *() const { return fmt.data; }
@@ -38,9 +40,10 @@ constexpr auto operator"" _fs()
 }
 
 template<typename T, typename U>
-constexpr bool
-  plain_same_v =  // #A Helper type-trait to strip the type down
-  std::is_same_v<std::remove_cvref_t<T>, std::remove_cvref_t<U>>;
+constexpr bool plain_same_v =  // #A Helper type-trait to  strip
+                               // the type down
+  std::is_same_v<std::remove_cvref_t<T>,
+                 std::remove_cvref_t<U>>;
 
 template<typename T>
 constexpr static bool match(const char c)
@@ -49,10 +52,12 @@ constexpr static bool match(const char c)
     case 'd': return plain_same_v<int, T>;
     case 'c': return plain_same_v<char, T>;
     case 'f': return plain_same_v<double, T>;
-    case 's':  // #C Character strings are a bit more difficult
-      return (plain_same_v<char, std::remove_all_extents_t<T>> &&
-              std::is_array_v<T>) ||
-             (plain_same_v<char*, std::remove_all_extents_t<T>> &&
+    case 's':  // #C Character strings are a bit more  difficult
+      return (plain_same_v<char,
+                           std::remove_all_extents_t<T>> and
+              std::is_array_v<T>) or
+             (plain_same_v<char*,
+                           std::remove_all_extents_t<T>> and
               std::is_pointer_v<T>);
     default: return false;
   }
@@ -83,39 +88,35 @@ constexpr bool IsMatching(std::span<const CharT> str)
   (std::make_index_sequence<sizeof...(Ts)>{});
 }
 
-template<typename... Ts>
-void print(auto fmt, const Ts&... ts)
+template<typename... Args>
+void print(auto fmt, const Args&... ts)
 {
-  // #A Use the count of arguments and compare it to the size of  the
-  // pack
-  static_assert(fmt.numArgs == sizeof...(Ts));
+  // #1 Use the count of arguments and compare it to the  size
+  // of the pack
+  static_assert(fmt.numArgs == sizeof...(Args));
 
-  // #B Check that specifier matches type
+  // cannot pass ts... because that is run-time
   static_assert(
-    IsMatching<std::decay_t<decltype(fmt.fmt.data[0])>,  // #C Get the
-                                                         // underlying
-                                                         // type
-               Ts...  // #D Expand the types pack
-               >(fmt.fmt.data));
+    IsMatching<std::decay_t<decltype(fmt.fmt.data[0])>,
+               Args...>(fmt.fmt.data));
 
   printf(fmt, ts...);
 }
 
-template<typename... Ts>
-void print(char* s, const Ts&... ts)
+void print(char* s, const auto&... ts)
 {
   printf(s, ts...);
 }
 
-template<typename... Ts>
-constexpr bool always_false_v =
-  false;  // #A Helper, returns always false
+// #A Helper, returns always false
+template<typename...>
+constexpr bool always_false_v = false;
 
 template<typename... Ts>
-void print(const char* s, Ts&&... ts)
+void print(const char* s, const Ts&...)
 {
-  // #B Use the helper to trigger the assert whenever this  template
-  // is instantiated
+  // #B Use the helper to trigger the assert whenever this
+  // template is instantiated
   static_assert(always_false_v<Ts...>, "Please use _fs");
 }
 

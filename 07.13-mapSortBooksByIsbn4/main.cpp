@@ -20,7 +20,7 @@ struct Price {
   double amount;
 };
 
-#if(__cpp_generic_lambdas >= 201707) && not defined(__clang__)
+#if(__cpp_generic_lambdas >= 201707)
 template<typename KEY, typename VALUE>
 using MapSortedByIsbn = std::map<KEY,
                                  VALUE,
@@ -32,7 +32,7 @@ using MapSortedByIsbn = std::map<KEY,
 
 int main()
 {
-#if(__cpp_generic_lambdas >= 201707) && not defined(__clang__)
+#if(__cpp_generic_lambdas >= 201707)
   const Book effectiveCpp{"Effective C++", "978-3-16-148410-0"};
   const Book fpCpp{"Functional Programming in C++", "978-3-20-148410-0"};
 

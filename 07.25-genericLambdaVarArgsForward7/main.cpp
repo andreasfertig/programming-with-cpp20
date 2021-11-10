@@ -25,11 +25,11 @@ template<typename T>
 concept NotFloatingPoint = not std::is_floating_point_v<T>;
 
 template<typename... Origins>
-auto getNamedLogger(Origins... origins)
+auto getNamedLogger(Origins&&... origins)
 {
   return [... _origins = std::forward<Origins>(origins)]
     // #A Type-constraint NotFloatingPoint to restrict all parameters not to be floats
-    <NotFloatingPoint... Ts>(Ts... args) requires(
+    <NotFloatingPoint... Ts>(Ts && ... args) requires(
       not std::disjunction_v<std::is_pointer<Origins>...>)
   {
     print(_origins..., std::forward<Ts>(args)...);

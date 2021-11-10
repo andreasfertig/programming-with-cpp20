@@ -20,9 +20,10 @@ template<typename VALUE>
 using MapBookSortedByIsbn =
   std::map<Book,
            VALUE,
-           decltype([](const Book& a,
-                       const Book& b)  // #A Provide the lambda in-place
-                    { return a.isbn > b.isbn; })>;
+           // #A Provide the lambda in-place
+           decltype([](const Book& a, const Book& b) {
+             return a.isbn > b.isbn;
+           })>;
 
 #endif
 
@@ -30,12 +31,14 @@ int main()
 {
 #if(__cpp_generic_lambdas >= 201707) && not defined(__clang__)
   const Book effectiveCpp{"Effective C++", "978-3-16-148410-0"};
-  const Book fpCpp{"Functional Programming in C++", "978-3-20-148410-0"};
+  const Book fpCpp{"Functional Programming in C++",
+                   "978-3-20-148410-0"};
 
   const Price normal{34.95};
   const Price reduced{24.95};
 
-  MapBookSortedByIsbn<Price> book2Price{{effectiveCpp, reduced}, {fpCpp, normal}};
+  MapBookSortedByIsbn<Price> book2Price{{effectiveCpp, reduced},
+                                        {fpCpp, normal}};
 
   for(const auto& [k, v] : book2Price) {
     printf("%s %s %f\n", k.title.c_str(), k.isbn.c_str(), v.amount);

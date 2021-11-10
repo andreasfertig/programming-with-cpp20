@@ -13,8 +13,8 @@ public:
       int operator()() const { return __this->c * 2; }
 
     private:
-      SomeClass*  // #B The captured object, a pointer to SomeClass
-        __this;
+      // #B The captured object, a pointer to SomeClass
+      SomeClass* __this;
 
     public:
       __lambda_8_18(SomeClass* _this)

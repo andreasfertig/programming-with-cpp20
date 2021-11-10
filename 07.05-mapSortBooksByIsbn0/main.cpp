@@ -28,16 +28,18 @@ using MapBookSortedByIsbn =  // #B Typed map for multiple use
 int main()
 {
   const Book effectiveCpp{"Effective C++", "978-3-16-148410-0"};
-  const Book fpCpp{"Functional Programming in C++", "978-3-20-148410-0"};
+  const Book fpCpp{"Functional Programming in C++",
+                   "978-3-20-148410-0"};
 
   const Price normal{34.95};
   const Price reduced{24.95};
 
-  MapBookSortedByIsbn<Price>  // #A Use the map with Price as value
-    book2Price{
-      {{effectiveCpp, reduced}, {fpCpp, normal}},  // #B Add some items to it
-      cmp  // #C Sadly we have to know and pass the cmp function
-    };
+  // #A Use the map with Price as value
+  MapBookSortedByIsbn<Price> book2Price{
+    {{effectiveCpp, reduced},
+     {fpCpp, normal}},  // #B Add some items to it
+    cmp  // #C Sadly we have to know and pass the cmp function
+  };
 
   for(const auto& [k, v] : book2Price) {
     printf("%s %s %f\n", k.title.c_str(), k.isbn.c_str(), v.amount);

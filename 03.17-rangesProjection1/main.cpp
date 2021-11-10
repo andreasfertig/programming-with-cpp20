@@ -1,14 +1,14 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<ranges>)
+#if __has_include(<ranges>) and not defined(__clang__)
 #  include <algorithm>
 #  include <iostream>
 #  include <ranges>
 #  include <string>
 #  include <vector>
 
-int main()
+void Use()
 {
   struct Book {
     std::string title;
@@ -22,6 +22,11 @@ int main()
   std::ranges::sort(books, {}, &Book::title);
 
   for(const auto& book : books) { std::cout << book.title << '\n'; }
+}
+
+int main()
+{
+  Use();
 }
 
 #else

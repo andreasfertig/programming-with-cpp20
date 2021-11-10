@@ -7,14 +7,16 @@
 
 int main()
 {
-  auto array =
-    std::to_array("Hello, C++20");  // #A Compiler deduces the size and type
+  // #A Compiler deduces the size and type
+  const auto array = std::to_array("Hello, C++20");
 
-  auto array2 = std::to_array<const char>(
-    "Hello, C++20");  // #B Compiler deduces the size and specify the type
+  // #B Compiler deduces the size and specify the type
+  const auto array2 = std::to_array<const char>("Hello, C++20");
 
-  auto arrayFromList = std::to_array({3, 4, 5});  // #C Create the array inline
+  // #C Create the array inline
+  const auto arrayFromList = std::to_array({3, 4, 5});
 
-  int  intArray[]{3, 4, 5};
-  auto movedArray = std::to_array(std::move(intArray));  // #D Move the values
+  int intArray[]{3, 4, 5};
+  // #D Move the values
+  const auto movedArray = std::to_array(std::move(intArray));
 }

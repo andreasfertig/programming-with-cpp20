@@ -29,8 +29,8 @@ struct promise_type_base {
   T mValue;  // #A The value yielded or returned from a coroutine
 
   auto yield_value(T value)  // #B Invoked by co_yield or co_return
-  {
-    mValue = std::move(value);  // #C Store the yielded value for access outside the coroutine
+  { // #C Store the yielded value for access outside the coroutine
+    mValue = std::move(value);  
 
     return std::suspend_always{};  // #D Suspend the coroutine here
   }
@@ -40,8 +40,10 @@ struct promise_type_base {
   std::suspend_always initial_suspend() { return {}; }
   std::suspend_always final_suspend() noexcept { return {}; }
   void                return_void() {}
-  void                unhandled_exception() { std::terminate(); }
-  static auto get_return_object_on_allocation_failure() { return G{nullptr}; }
+  void                unhandled_exception() 
+                      { std::terminate(); }
+  static auto get_return_object_on_allocation_failure() 
+              { return G{nullptr}; }
 };
 
 
@@ -63,8 +65,11 @@ namespace coro_iterator {
     }
 
     void        operator++() { resume(); }
-    bool        operator==(const iterator&) const { return mCoroHdl.done(); }
-    const auto& operator*() const { return mCoroHdl.promise().mValue; }
+    bool        operator==(const iterator&) const 
+    { return mCoroHdl.done(); }
+    
+    const auto& operator*() const 
+    { return mCoroHdl.promise().mValue; }
   };
 }  // namespace coro_iterator
 

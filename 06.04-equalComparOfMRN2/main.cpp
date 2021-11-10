@@ -22,23 +22,27 @@ public:
   }
 
   // #B The additional overloads for uint64_t
-  friend bool operator==(const MedicalRecordNumber& rec, const uint64_t& num)
+  friend bool operator==(const MedicalRecordNumber& rec,
+                         const uint64_t&            num)
   {
     return rec.mMRN == num;
   }
 
-  friend bool operator!=(const MedicalRecordNumber& rec, const uint64_t& num)
+  friend bool operator!=(const MedicalRecordNumber& rec,
+                         const uint64_t&            num)
   {
     return !(rec == num);
   }
 
-  // #C The additional overloads with swapped arguments for uint64_t
-  friend bool operator==(const uint64_t& num, const MedicalRecordNumber& rec)
+  // #C The additional overloads with swapped arguments for  uint64_t
+  friend bool operator==(const uint64_t&            num,
+                         const MedicalRecordNumber& rec)
   {
     return (rec == num);
   }
 
-  friend bool operator!=(const uint64_t& num, const MedicalRecordNumber& rec)
+  friend bool operator!=(const uint64_t&            num,
+                         const MedicalRecordNumber& rec)
   {
     return !(rec == num);
   }

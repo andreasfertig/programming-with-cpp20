@@ -1,7 +1,7 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>)
+#if __has_include(<format>) and not defined(__clang__)
 #  include <array>
 #  include <format>
 #  include <iostream>
@@ -11,35 +11,43 @@ enum LogLevel { Info, Warning, Error };
 
 template<>
 struct std::formatter<LogLevel> : std::formatter<const char*> {
-  inline static const char* LEVEL_NAMES[] = {"Info", "Warning", "Error"};
+  inline static const char* LEVEL_NAMES[] = {"Info",
+                                             "Warning",
+                                             "Error"};
 
   auto format(LogLevel c, format_context& ctx)
   {
-    return std::formatter<const char*>::format(LEVEL_NAMES[c], ctx);
+    return std::formatter<const char*>::format(LEVEL_NAMES[c],
+                                               ctx);
   }
 };
 
-void vlog(LogLevel level, std::string_view fmt, std::format_args&& args)
+void vlog(LogLevel           level,
+          std::string_view   fmt,
+          std::format_args&& args)
 {
-  std::clog << std::format("{}: ", level) << std::vformat(fmt, args) << '\n';
+  std::clog << std::format("{}: ", level)
+            << std::vformat(fmt, args) << '\n';
 }
 
-template<typename... Args>
-constexpr void log(LogLevel level, std::string_view fmt, Args&&... args)
+constexpr void
+log(LogLevel level, std::string_view fmt, const auto&... args)
 {
   vlog(level, fmt, std::make_format_args(args...));
 }
 
 void Use()
 {
-  int         x{4};
-  std::string share{"Amazon"};
-  double      d{3'117.02};
+  const std::string share{"Amazon"};
+  const double      price{3'117.02};
 
-  log(LogLevel::Info, "Share price {} very high: {}", share, d);
+  log(LogLevel::Info,
+      "Share price {} very high: {}",
+      share,
+      price);
 
   errno = 4;
-  log(LogLevel::Error, "Unknown stock, errno {}", errno);
+  log(LogLevel::Error, "Unknown stock, errno: {}", errno);
 }
 
 int main()

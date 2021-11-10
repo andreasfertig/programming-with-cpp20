@@ -1,7 +1,8 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>) && not defined(_MSC_VER)
+#if __has_include(                                             \
+  <format>) and not defined(__clang__) && not defined(_MSC_VER)
 #  include <format>
 #  include <iomanip>
 #  include <iostream>
@@ -19,7 +20,7 @@ public:
   : mName{name}
   {}
 
-  std::string name() const { return mName; }
+  const std::string& name() const { return mName; }
 
   void setPoints(double points)
   {
@@ -75,22 +76,26 @@ struct std::formatter<StockIndex> {
     }
 
     // #A Check if reached the end of the range
-    if(it != end && *it != '}') { throw format_error("invalid format"); }
+    if(it != end && *it != '}') {
+      throw format_error("invalid format");
+    }
 
-    // #B Return an iterator past the end of the parsed range
+    // #B Return an iterator past the end of the parsed  range
     return it;
   }
 
   auto format(const StockIndex& index, format_context& ctx)
   {
     if(IndexFormat::Short == indexFormat) {
-      return std::format_to(
-        ctx.out(), "{:10} {:>8.2f}", index.name(), index.points());
-
+      return std::format_to(ctx.out(),
+                            "{:10} {:>8.2f}",
+                            index.name(),
+                            index.points());
     } else {
-      const std::string fmt{(IndexFormat::WithPlus == indexFormat)
-                              ? "{:10} {:>8.2f}  {: >+7.2f}  {:+.2f}%"
-                              : "{:10} {:>8.2f}  {:>6.2f}  {:.2f}%"};
+      const std::string fmt{
+        (IndexFormat::WithPlus == indexFormat)
+          ? "{:10} {:>8.2f}  {: >+7.2f}  {:+.2f}%"
+          : "{:10} {:>8.2f}  {:>6.2f}  {:.2f}%"};
 
       return std::format_to(ctx.out(),
                             fmt,
@@ -102,7 +107,7 @@ struct std::formatter<StockIndex> {
   }
 };
 
-int main()
+void Use()
 {
   for(const auto& index : GetIndices()) {
     std::cout << std::format("{}\n", index);
@@ -115,6 +120,11 @@ int main()
   for(const auto& index : GetIndices()) {
     std::cout << std::format("{:p}\n", index);
   }
+}
+
+int main()
+{
+  Use();
 }
 
 #else

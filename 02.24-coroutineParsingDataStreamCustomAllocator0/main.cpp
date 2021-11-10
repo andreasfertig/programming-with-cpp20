@@ -49,6 +49,7 @@ struct promise_type_base {
     mValue = value;
     return {};
   }
+
   auto initial_suspend()
   {
     if constexpr(InitialSuspend) {
@@ -60,18 +61,34 @@ struct promise_type_base {
 
   std::suspend_always final_suspend() noexcept { return {}; }
   G                   get_return_object() { return G{this}; };
-  void                unhandled_exception() { std::terminate(); }
+  void                unhandled_exception();
   void                return_void() {}
 
   // #A Custom operator new
-  void* operator new(size_t size) noexcept { return Allocate(size); }
+  void* operator new(size_t size) noexcept
+  {
+    return Allocate(size);
+  }
 
   // #B Custom operator delete
-  void operator delete(void* ptr, size_t size) { Deallocate(ptr, size); }
+  void operator delete(void* ptr, size_t size)
+  {
+    Deallocate(ptr, size);
+  }
 
   // #C Allow new to be noexcept
-  static auto get_return_object_on_allocation_failure() { return G{nullptr}; }
+  static auto get_return_object_on_allocation_failure()
+  {
+    return G{nullptr};
+  }
 };
+
+template<typename T, typename G, bool InitialSuspend>
+void promise_type_base<T, G, InitialSuspend>::
+  unhandled_exception()
+{
+  std::terminate();
+}
 
 namespace coro_iterator {
   template<typename PT>
@@ -94,17 +111,26 @@ namespace coro_iterator {
 
     void operator++() { resume(); }
 
-    bool           operator==(const iterator&) const { return mCoroHdl.done(); }
-    const RetType& operator*() const { return mCoroHdl.promise().mValue; }
+    bool operator==(const iterator&) const
+    {
+      return mCoroHdl.done();
+    }
+    const RetType& operator*() const
+    {
+      return mCoroHdl.promise().mValue;
+    }
   };
 }  // namespace coro_iterator
 
 template<typename T, bool IntialSuspend = true>  // #A New NTTP
 struct generator {
   using promise_type =
-    promise_type_base<T, generator, IntialSuspend>;  // #B Forward IntialSuspend
+    promise_type_base<T,
+                      generator,
+                      IntialSuspend>;  // #B Forward
+                                       // IntialSuspend
   using PromiseTypeHandle = std::coroutine_handle<promise_type>;
-  using iterator          = coro_iterator::iterator<promise_type>;
+  using iterator = coro_iterator::iterator<promise_type>;
 
   iterator begin() { return {mCoroHdl}; }
   iterator end() { return {}; }
@@ -129,7 +155,8 @@ struct generator {
   }
 
 private:
-  friend promise_type;  // #A As the default ctor is private we G needs to be a friend
+  friend promise_type;  // #A As the default ctor is private we
+                        // G needs to be a friend
   explicit generator(promise_type* p)
   : mCoroHdl(PromiseTypeHandle::from_promise(*p))
   {}
@@ -144,7 +171,8 @@ public:
   DataStreamReader() = default;
 
   // #B Using DesDeMovA to disable copy and move operations
-  DataStreamReader& operator=(DataStreamReader&&) noexcept = delete;
+  DataStreamReader&
+  operator=(DataStreamReader&&) noexcept = delete;
 
   struct Awaiter {  // #C Awaiter implementation
     Awaiter& operator=(Awaiter&&) noexcept = delete;
@@ -154,7 +182,10 @@ public:
       mEvent.mAwaiter = this;
     }
 
-    bool await_ready() const noexcept { return mEvent.mData.has_value(); }
+    bool await_ready() const noexcept
+    {
+      return mEvent.mData.has_value();
+    }
 
     void await_suspend(std::coroutine_handle<> coroHdl) noexcept
     {
@@ -195,7 +226,8 @@ using FSM = generator<std::string, false>;
 static const byte ESC{'H'};
 static const byte SOF{0x10};
 
-FSM Parse(DataStreamReader& stream)  // #A Pass the stream a parameter
+FSM Parse(
+  DataStreamReader& stream)  // #A Pass the stream a parameter
 {
   while(true) {
     byte        b = co_await stream;  // #B Await on the stream
@@ -237,6 +269,55 @@ generator<byte> sender(std::vector<byte> fakeBytes)
 
 void HandleFrame(const std::string& frame);
 
+void Use()
+{
+  std::vector<byte> fakeBytes1{0x70_B,
+                               ESC,
+                               SOF,
+                               ESC,
+                               'H'_B,
+                               'e'_B,
+                               'l'_B,
+                               'l'_B,
+                               'o'_B,
+                               ESC,
+                               SOF,
+                               0x7_B,
+                               ESC,
+                               SOF};
+
+  std::vector<byte> fakeBytes2{
+    'W'_B, 'o'_B, 'r'_B, 'l'_B, 'd'_B, ESC, SOF, 0x99_B};
+
+  auto stream1 = sender(std::move(fakeBytes1));
+
+  DataStreamReader
+       dr{};           // #A Create a DataStreamReader Awaitable
+  auto p = Parse(dr);  // #B Create the Parse coroutine and pass
+                       // the DataStreamReader
+
+  for(const auto& b : stream1) {
+    dr.set(b);  // #C Send the new byte to the waiting
+                // DataStreamReader
+
+    if(const auto& res = p(); res.length()) {
+      HandleFrame(res);
+    }
+  }
+
+  auto stream2 = sender(std::move(
+    fakeBytes2));  // #D Simulate a second network stream
+
+  for(const auto& b : stream2) {
+    dr.set(b);  // #E We still use the former dr and p and feed
+                // it with new bytes
+
+    if(const auto& res = p(); res.length()) {
+      HandleFrame(res);
+    }
+  }
+}
+
 void HandleFrame(const std::string& frame)
 {
   printf("%s\n", frame.c_str());
@@ -244,27 +325,5 @@ void HandleFrame(const std::string& frame)
 
 int main()
 {
-  std::vector<byte> fakeBytes1{
-    0x70_B, ESC, SOF, ESC, 'H'_B, 'e'_B, 'l'_B, 'l'_B, 'o'_B, ESC, SOF, 0x7_B, ESC, SOF};
-
-  std::vector<byte> fakeBytes2{'W'_B, 'o'_B, 'r'_B, 'l'_B, 'd'_B, ESC, SOF, 0x99_B};
-
-  auto stream1 = sender(std::move(fakeBytes1));
-
-  DataStreamReader dr{};  // #A Create a DataStreamReader Awaitable
-  auto p = Parse(dr);     // #B Create the Parse coroutine and pass the DataStreamReader
-
-  for(const auto& b : stream1) {
-    dr.set(b);  // #C Send the new byte to the waiting DataStreamReader
-
-    if(const auto& res = p(); res.length()) { HandleFrame(res); }
-  }
-
-  auto stream2 = sender(std::move(fakeBytes2));  // #D Simulate a second network stream
-
-  for(const auto& b : stream2) {
-    dr.set(b);  // #E We still use the former dr and p and feed it with new bytes
-
-    if(const auto& res = p(); res.length()) { HandleFrame(res); }
-  }
+  Use();
 }

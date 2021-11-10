@@ -7,10 +7,10 @@
 
 int main()
 {
-  std::map<int, std::string> cppStds = {
+  const std::map<int, std::string> cppStds = {
     {11, "C++11"}, {14, "C++14"}, {17, "C++17"}, {20, "C++20"}};
 
-  const int key = 11;
+  const int key = 20;
 
   if(cppStds.contains(key)) {
     std::cout << "Found\n";
