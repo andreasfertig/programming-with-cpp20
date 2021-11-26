@@ -41,7 +41,7 @@ auto getNamedLogger(Origins&&... origins)
 int main()
 {
   auto steeringLogger = getNamedLogger("Steering"s);
-  auto breakLogger    = getNamedLogger("Breaks"s, "Left"s, "Front"s);
+  auto brakeLogger    = getNamedLogger("Brakes"s, "Left"s, "Front"s);
 
   steeringLogger("angle"s, 90);
 }

@@ -30,7 +30,7 @@ auto getNamedLogger(const std::string origin)
 int main()
 {
   auto steeringLogger = getNamedLogger("Steering"s);
-  auto breakLogger    = getNamedLogger("Breaks"s);
+  auto brakeLogger    = getNamedLogger("Brake"s);
 
   steeringLogger("angle"s, 90);
 }

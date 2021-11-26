@@ -32,8 +32,8 @@ int main()
 {
   // #A Logger for steering
   auto steeringLogger = getNamedLogger("Steering"s);
-  // #B Logger for breaks
-  auto breakLogger = getNamedLogger("Breaks"s);
+  // #B Logger for brakes
+  auto brakeLogger = getNamedLogger("Brake"s);
 
   steeringLogger("angle"s, 90);  // #C Log a steering-related message
 }
