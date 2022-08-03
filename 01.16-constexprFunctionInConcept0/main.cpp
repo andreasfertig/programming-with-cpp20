@@ -4,7 +4,6 @@
 #include <array>
 #include <cstddef>
 
-#if not defined(_MSC_VER)
 // #A A helper function with a default parameter
 constexpr auto GetSize(const auto& t = {})
 {
@@ -26,9 +25,3 @@ int main()
 
   SendOnePing(a);
 }
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

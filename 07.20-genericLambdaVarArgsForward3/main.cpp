@@ -27,8 +27,7 @@ auto getNamedLogger(Origins&&... origins)
 {
   // #A Create an init-capture of tuple and move origins into it
   return [tup = std::make_tuple(std::forward<Origins>(
-            origins)...)]<typename... Ts>(Ts && ... args)
-  {
+            origins)...)]<typename... Ts>(Ts&&... args) {
     std::apply(
       // #B A second lambda which is applied to the tuple values
       [&](const auto&... _origins) {

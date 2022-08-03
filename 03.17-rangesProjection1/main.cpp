@@ -8,7 +8,7 @@
 #  include <string>
 #  include <vector>
 
-void Use()
+int main()
 {
   struct Book {
     std::string title;
@@ -22,11 +22,6 @@ void Use()
   std::ranges::sort(books, {}, &Book::title);
 
   for(const auto& book : books) { std::cout << book.title << '\n'; }
-}
-
-int main()
-{
-  Use();
 }
 
 #else

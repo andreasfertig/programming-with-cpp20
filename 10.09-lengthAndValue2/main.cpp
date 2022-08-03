@@ -13,21 +13,6 @@ bool write(const char*, size_t)
 bool Send(std::span<const char> data);
 void Read(std::span<char> data);
 
-void Use()
-{
-  std::array<char, 1'024> buffer{};
-
-  Read(buffer);
-  Send(buffer);
-
-  // some code in-between
-
-  char buffer2[2'048]{};
-
-  Read(buffer2);
-  Send(buffer2);
-}
-
 bool Send(std::span<const char> data)
 {
   return write(data.data(), data.size());
@@ -40,5 +25,15 @@ void Read(std::span<char> data)
 
 int main()
 {
-  Use();
+  std::array<char, 1'024> buffer{};
+
+  Read(buffer);
+  Send(buffer);
+
+  // some code in-between
+
+  char buffer2[2'048]{};
+
+  Read(buffer2);
+  Send(buffer2);
 }

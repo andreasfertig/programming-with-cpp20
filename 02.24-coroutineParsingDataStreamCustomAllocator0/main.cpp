@@ -2,14 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include <cassert>
-#if __has_include(<experimental/coroutine>)
-#  include <experimental/coroutine>
-namespace std {
-  using namespace std::experimental;
-}
-#elif __has_include(<coroutine>)
-#  include <coroutine>
-#endif
+#include <coroutine>
 #include <cstdio>
 #include <functional>
 #include <optional>
@@ -269,7 +262,12 @@ generator<byte> sender(std::vector<byte> fakeBytes)
 
 void HandleFrame(const std::string& frame);
 
-void Use()
+void HandleFrame(const std::string& frame)
+{
+  printf("%s\n", frame.c_str());
+}
+
+int main()
 {
   std::vector<byte> fakeBytes1{0x70_B,
                                ESC,
@@ -316,14 +314,4 @@ void Use()
       HandleFrame(res);
     }
   }
-}
-
-void HandleFrame(const std::string& frame)
-{
-  printf("%s\n", frame.c_str());
-}
-
-int main()
-{
-  Use();
 }

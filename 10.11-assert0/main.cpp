@@ -27,12 +27,7 @@ void Assert(bool             condition,
          __LINE__)  // #E Get function and line information from
                     // caller
 
-void Use()
-{
-  ASSERT(1 != 2, "Not met");
-}
-
 int main()
 {
-  Use();
+  ASSERT(1 != 2, "Not met");
 }

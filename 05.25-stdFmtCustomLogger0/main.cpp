@@ -7,6 +7,8 @@
 #  include <iostream>
 #  include <string_view>
 
+using namespace std::literals;
+
 enum LogLevel { Info, Warning, Error };
 
 template<>
@@ -26,11 +28,12 @@ void log(LogLevel         level,
          std::string_view fmt,
          const auto&... args)
 {
-  std::clog << std::format("{}: ", level)
-            << std::format(fmt, args...) << '\n';
+  std::clog << std::format("{}: "sv, level)
+            << std::vformat(fmt, std::make_format_args(args...))
+            << '\n';
 }
 
-void Use()
+int main()
 {
   int         x{4};
   std::string share{"Amazon"};
@@ -40,11 +43,6 @@ void Use()
 
   errno = 4;
   log(LogLevel::Error, "Unknown stock, errno {}", errno);
-}
-
-int main()
-{
-  Use();
 }
 
 #else

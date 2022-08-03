@@ -61,7 +61,7 @@ constexpr void log(LogLevel level, const auto&... args)
        std::make_format_args(level, args...));
 }
 
-void Use()
+int main()
 {
   int         x{4};
   std::string share{"Amazon"};
@@ -71,11 +71,6 @@ void Use()
 
   errno = 4;
   log(LogLevel::Error, "Unknown stock, errno", errno);
-}
-
-int main()
-{
-  Use();
 }
 
 #else

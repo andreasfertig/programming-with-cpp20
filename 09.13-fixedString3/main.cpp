@@ -7,8 +7,7 @@
 #include <cstddef>
 #include <span>
 
-#if not defined(_MSC_VER) &&                                   \
-  __has_include(<ranges>) and not defined(__clang__)
+#if __has_include(<ranges>) and not defined(__clang__)
 
 template<typename CharT, std::size_t N>
 struct fixed_string {

@@ -1,25 +1,8 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#include <version>
-
-#if __has_include(<experimental/coroutine>)
-#  include <experimental/coroutine>
-
-namespace std {
-  using namespace std::experimental;
-}
-#elif __has_include(<coroutine>)
-#if __has_include(<experimental/coroutine>)
-#include <experimental/coroutine>
-namespace std { using namespace std::experimental; }
-#elif __has_include(<coroutine>)
+#include <new>
 #include <coroutine>
-#endif
-#else
-#  pragma message("not supported")
-#endif
-
 #include <cstdio>
 #include <exception>
 #include <utility>

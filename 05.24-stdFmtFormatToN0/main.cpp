@@ -7,18 +7,13 @@
 #  include <iostream>
 #  include <string_view>
 
-void Use()
+int main()
 {
   std::array<char, 10> buffer{};
   std::format_to_n(
     buffer.data(), buffer.size() - 1, "{}, {}", "Hello", "World");
 
   std::cout << buffer.data() << '\n';
-}
-
-int main()
-{
-  Use();
 }
 
 #else

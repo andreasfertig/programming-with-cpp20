@@ -19,15 +19,10 @@ Keeper GetKeeper()  // #C Returns by value
   return {};
 }
 
-void Use()
+int main()
 {
   // #D Use the result of GetKeeper and return over items
   for(auto& item : GetKeeper().items()) {
     std::cout << item << '\n';
   }
-}
-
-int main()
-{
-  Use();
 }

@@ -22,7 +22,6 @@ void print(First&& first, Rest&&... args)
   std::cout << '\n';
 }
 
-#if not defined(_MSC_VER) 
 template<typename... Origins>
 auto getNamedLogger(Origins&&... origins)
 {
@@ -47,9 +46,3 @@ int main()
 
   steeringLogger("angle"s, 90);
 }
-#else
-int main()
-{ /*keep*/
-#  pragma message("not supported")
-}
-#endif

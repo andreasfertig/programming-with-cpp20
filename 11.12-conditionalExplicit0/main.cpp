@@ -11,12 +11,6 @@ struct A {
 
 void Fun(A a);
 
-void Use()
-{
-  Fun(A{});
-  // Fun(B{}); // #B Will not compile due to explicit ctor
-}
-
 void Fun(A a) {}
 
 A::A(const B&) {}
@@ -27,5 +21,6 @@ A::operator B() const
 
 int main()
 {
-  Use();
+  Fun(A{});
+  // Fun(B{}); // #B Will not compile due to explicit ctor
 }

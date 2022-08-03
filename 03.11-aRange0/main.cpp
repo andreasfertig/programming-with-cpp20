@@ -27,8 +27,14 @@ namespace rnges {
     std::default_sentinel_t end();
   };
 
-  T Range::begin() { return {}; }
+  T Range::begin()
+  {
+    return {};
+  }
 
-  std::default_sentinel_t Range::end() { return {}; }
+  std::default_sentinel_t Range::end()
+  {
+    return {};
+  }
 }  // namespace rnges
 int main() {}

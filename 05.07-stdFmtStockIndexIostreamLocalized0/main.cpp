@@ -52,7 +52,7 @@ std::vector<StockIndex> GetIndices()
   return {dax, dow, sp};
 }
 
-void Use()
+int main()
 {
   for(const auto& index : GetIndices()) {
     std::cout << std::fixed;
@@ -66,9 +66,4 @@ void Use()
               << index.pointsDiff() << " "
               << index.pointsPercent() << '%' << '\n';
   }
-}
-
-int main()
-{
-  Use();
 }

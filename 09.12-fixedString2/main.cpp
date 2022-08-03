@@ -45,18 +45,13 @@ void print(auto fmt, const auto&... args)
   printf(fmt, args...);
 }
 
-void Use()
-{
-  print(FormatString<"%s, %s">{}, "Hello", "C++20");
-
-  print("%s, %s"_fs, "Hello", "C++20");
-}
-
 int main()
 {
   fixed_string fs{"Hello, C++20"};
 
-  Use();
+  print(FormatString<"%s, %s">{}, "Hello", "C++20");
+
+  print("%s, %s"_fs, "Hello", "C++20");
 }
 #else
 int main()

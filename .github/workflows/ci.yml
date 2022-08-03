@@ -24,13 +24,13 @@ jobs:
             gcc_version: 11,
           }
 
-        # Clang-13
+        # Clang-14
         - {
-            name: "Linux Clang 13",
+            name: "Linux Clang 14",
             os: ubuntu-20.04,
             build_type: Release,
-            cxx: "clang++-13",
-            clang_version: 13,
+            cxx: "clang++-14",
+            clang_version: 14,
             libcxx: true
           }
 
@@ -48,7 +48,7 @@ jobs:
             os: windows-latest,
             build_type: Release,
             cxx: "cl",
-            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
+            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
           }
 
     steps:
@@ -98,7 +98,7 @@ jobs:
           )
         endif()
 
-    - name: Install Clang 13
+    - name: Install Clang 14
       id: install_clang_11
       if: startsWith(matrix.config.os, 'ubuntu') && startsWith(matrix.config.cxx, 'clang++-')
       shell: bash
@@ -132,6 +132,10 @@ jobs:
         CXX: ${{ matrix.config.cxx }}
       run: |
         sudo apt-get install libc++-${{ matrix.config.clang_version }}-dev libc++abi-${{ matrix.config.clang_version }}-dev
+
+    - name: Setup MSVC Dev
+      if: "startsWith(matrix.config.os, 'Windows')"
+      uses: ilammy/msvc-dev-cmd@v1
 
     - name: Configure
       id: cmake_configure

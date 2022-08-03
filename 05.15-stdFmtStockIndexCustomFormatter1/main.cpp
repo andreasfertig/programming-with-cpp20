@@ -1,14 +1,16 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(                                             \
-  <format>) and not defined(__clang__) && not defined(_MSC_VER)
+#if __has_include(<format>) and not defined(__clang__)
 #  include <format>
 #  include <iomanip>
 #  include <iostream>
 #  include <locale>
 #  include <string>
+#  include <string_view>
 #  include <vector>
+
+using namespace std::literals;
 
 class StockIndex {
   std::string mName{};
@@ -84,30 +86,31 @@ struct std::formatter<StockIndex> {
     return it;
   }
 
-  auto format(const StockIndex& index, format_context& ctx)
+  auto format(const StockIndex& index, std::format_context& ctx)
   {
     if(IndexFormat::Short == indexFormat) {
       return std::format_to(ctx.out(),
-                            "{:10} {:>8.2f}",
+                            "{:10} {:>8.2f}"sv,
                             index.name(),
                             index.points());
     } else {
-      const std::string fmt{
+      const auto fmt{
         (IndexFormat::WithPlus == indexFormat)
-          ? "{:10} {:>8.2f}  {: >+7.2f}  {:+.2f}%"
-          : "{:10} {:>8.2f}  {:>6.2f}  {:.2f}%"};
+          ? "{:10} {:>8.2f}  {: >+7.2f}  {:+.2f}%"sv
+          : "{:10} {:>8.2f}  {:>6.2f}  {:.2f}%"sv};
 
-      return std::format_to(ctx.out(),
-                            fmt,
-                            index.name(),
-                            index.points(),
-                            index.pointsDiff(),
-                            index.pointsPercent());
+      return std::vformat_to(
+        ctx.out(),
+        fmt,
+        std::make_format_args(index.name(),
+                              index.points(),
+                              index.pointsDiff(),
+                              index.pointsPercent()));
     }
   }
 };
 
-void Use()
+int main()
 {
   for(const auto& index : GetIndices()) {
     std::cout << std::format("{}\n", index);
@@ -120,11 +123,6 @@ void Use()
   for(const auto& index : GetIndices()) {
     std::cout << std::format("{:p}\n", index);
   }
-}
-
-int main()
-{
-  Use();
 }
 
 #else

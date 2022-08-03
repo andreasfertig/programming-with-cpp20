@@ -6,14 +6,9 @@
 #  include <iostream>
 #  include <string>
 
-void Use()
-{
-  std::cout << std::format("Having the }} in a {}.", "string");
-}
-
 int main()
 {
-  Use();
+  std::cout << std::format("Having the }} in a {}.", "string");
 
   std::cout << '\n';
 }

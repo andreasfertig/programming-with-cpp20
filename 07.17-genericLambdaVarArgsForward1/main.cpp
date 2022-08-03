@@ -21,8 +21,7 @@ void print(First&& first, Rest&&... args)
 
 auto getNamedLogger(const std::string origin)
 {
-  return [=]<typename... Ts>(Ts... args)
-  {
+  return [=]<typename... Ts>(Ts... args) {
     print(origin, std::forward<Ts>(args)...);
   };
 }

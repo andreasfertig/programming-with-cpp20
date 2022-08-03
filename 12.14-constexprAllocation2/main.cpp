@@ -36,9 +36,9 @@ struct Tesla : Car {
 constexpr unique_ptr<Car> CreateCar(int i)
 {
   switch(i) {
-    case 0: return new Mercedes{}; break;
-    case 1: return new Toyota{}; break;
-    case 2: return new Tesla{}; break;
+    case 0: return new Mercedes{};
+    case 1: return new Toyota{};
+    case 2: return new Tesla{};
   }
 
   return nullptr;

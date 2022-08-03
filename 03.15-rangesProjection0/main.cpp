@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-void Use()
+int main()
 {
   struct Book {
     std::string title;
@@ -23,9 +23,4 @@ void Use()
     });
 
   for(const auto& book : books) { std::cout << book.title << '\n'; }
-}
-
-int main()
-{
-  Use();
 }

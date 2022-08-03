@@ -52,16 +52,11 @@ std::vector<StockIndex> GetIndices()
   return {dax, dow, sp};
 }
 
-void Use()
+int main()
 {
   for(const auto& index : GetIndices()) {
     std::cout << index.name() << " " << index.points() << "  "
               << index.pointsDiff() << "  "
               << index.pointsPercent() << '%' << '\n';
   }
-}
-
-int main()
-{
-  Use();
 }

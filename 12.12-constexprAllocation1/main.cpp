@@ -23,9 +23,9 @@ struct Tesla : Car {
 constexpr Car* CreateCar(int i)
 {
   switch(i) {
-    case 0: return new Mercedes{}; break;
-    case 1: return new Toyota{}; break;
-    case 2: return new Tesla{}; break;
+    case 0: return new Mercedes{};
+    case 1: return new Toyota{};
+    case 2: return new Tesla{};
   }
 
   return nullptr;
@@ -49,18 +49,13 @@ constexpr int FastestCar()
   return maxId;
 }
 
-void Use()
+int main()
 {
   auto* c = CreateCar(1);
 
   constexpr auto f = FastestCar();
 
   static_assert(f == 2);
-}
-
-int main()
-{
-  Use();
 }
 #else
 int main()

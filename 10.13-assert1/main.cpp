@@ -20,15 +20,10 @@ void Assert(bool                 condition,
   }
 }
 
-void Use()
+int main()
 {
   // #C A call to Assert with  information of Use
   Assert(1 != 2, "Not met");
-}
-
-int main()
-{
-  Use();
 }
 #else
 int main()

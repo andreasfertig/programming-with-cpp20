@@ -8,7 +8,7 @@
 #  include <string>
 #  include <vector>
 
-void Use()
+int main()
 {
   std::string       suffix{"EUR"};
   const std::vector prices{3.95, 6.0, 95.4, 10.95, 12.90, 5.50};
@@ -20,11 +20,6 @@ void Use()
       [suffix](auto i) { return std::to_string(i) + suffix; });
 
   for(const auto& e : subView) { std::cout << e << '\n'; }
-}
-
-int main()
-{
-  Use();
 }
 
 #else

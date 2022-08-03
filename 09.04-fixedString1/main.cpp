@@ -6,6 +6,7 @@
 #include <iostream>
 #include <version>
 
+#if not defined(__clang__)
 template<typename CharT, std::size_t N>
 struct fixed_string {
   CharT data[N]{};
@@ -16,7 +17,6 @@ struct fixed_string {
   }
 };
 
-#if __has_include(<ranges>) and not defined(__clang__)
 template<fixed_string Str>  // #A Here we have a NTTP
 struct FixedStringContainer {
   void print()
@@ -24,14 +24,6 @@ struct FixedStringContainer {
     std::cout << Str.data << '\n';  // #B Use Str
   }
 };
-
-void Use()
-{
-  // #C We can instantiate the template with a string
-  FixedStringContainer<"Hello, C++"> fc{};
-  fc.print();  // #D For those who believe it only if they see
-               // it
-}
 
 template<fixed_string Str>  // #A Takes the fixed string as NTTP
 struct FormatString {
@@ -64,6 +56,11 @@ int main()
   print(FormatString<"%s, %s">{}, "Hello", "C++20");
 
   print("%s, %s"_fs, "Hello", "C++20");
+
+  // #C We can instantiate the template with a string
+  FixedStringContainer<"Hello, C++"> fc{};
+  fc.print();  // #D For those who believe it only if they see
+               // it
 }
 #else
 int main()

@@ -18,15 +18,6 @@ struct Point2D {
 void Add(const Point& p, int v);
 void Add(const Point2D& p, int v);
 
-void Use()
-{
-  Add({.X = 3, .y = 4}, 3);  // #C Fine, selects Point2D
-  Add({.y = 4, .x = 3}, 3);  // #D Fine, selects Point
-
-  // #E Will not compile as soley .y is ambiguous
-  // Add({.y = 4}, 3);
-}
-
 void Add(const Point& p, int v)
 {
   printf("Point\n");
@@ -39,5 +30,9 @@ void Add(const Point2D& p, int v)
 
 int main()
 {
-  Use();
+  Add({.X = 3, .y = 4}, 3);  // #C Fine, selects Point2D
+  Add({.y = 4, .x = 3}, 3);  // #D Fine, selects Point
+
+  // #E Will not compile as soley .y is ambiguous
+  // Add({.y = 4}, 3);
 }

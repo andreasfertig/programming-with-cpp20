@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 #if 0
-module;  ///\lc{A}{Starts the module, only required, if we have legacy includes}
+module;  // #A Starts the module, only required, if we have legacy  includes
 // Global module fragment, legacy #includes go here
 
-[export] module AwesomeModule;  ///\lc{B}{Export if it is an interface}
+[export] module AwesomeModule;  // #B Export if it is an interface
 // Module Purview, imports go here
 
 import x;         // #C Import something only visible in the module

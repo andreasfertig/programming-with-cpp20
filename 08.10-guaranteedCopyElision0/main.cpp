@@ -21,13 +21,8 @@ NonCopyableOrMoveable RVO()
   return {};  // #B This is where RVO happens
 }
 
-void Use()
+int main()
 {
   // #C The return-object is created directly at  myValue
   auto myValue = RVO();
-}
-
-int main()
-{
-  Use();
 }

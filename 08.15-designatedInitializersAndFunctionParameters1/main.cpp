@@ -11,12 +11,7 @@ void FileAccess(const FileAccessParameters& params);
 
 void FileAccess(const FileAccessParameters& params) {}
 
-void Use()
-{
-  FileAccess({.open = true, .close = false, .readonly = true});
-}
-
 int main()
 {
-  Use();
+  FileAccess({.open = true, .close = false, .readonly = true});
 }

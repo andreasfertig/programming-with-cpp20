@@ -1,11 +1,10 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if not defined(_MSC_VER)
-#  include <iostream>
-#  include <string>
-#  include <type_traits>
-#  include <utility>
+#include <iostream>
+#include <string>
+#include <type_traits>
+#include <utility>
 
 using namespace std::literals::string_literals;
 
@@ -45,7 +44,3 @@ int main()
 
   steeringLogger("angle"s, 90);
 }
-#else
-#  pragma message("not supported")
-int main() {}
-#endif

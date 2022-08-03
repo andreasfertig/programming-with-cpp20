@@ -20,7 +20,6 @@ void print(First&& first, Rest&&... args)
   std::cout << '\n';
 }
 
-#if not defined(_MSC_VER)
 template<typename T>
 concept NotFloatingPoint = not std::is_floating_point_v<T>;
 
@@ -43,7 +42,3 @@ int main()
 
   steeringLogger("angle"s, 90);
 }
-#else
-#  pragma message("not supported")
-int main() {}
-#endif

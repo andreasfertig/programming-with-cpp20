@@ -58,7 +58,6 @@ if(MSVC)
     add_definitions(/wd4996) # 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS.
     add_definitions(/wd4267)
     add_definitions(/wd4505)
-    add_definitions(/await) # enable coroutine support
 
     # Use sane and nice C++ for MSVC.
     # This makes alternative tokens (not, and, ...) as actual keywords and

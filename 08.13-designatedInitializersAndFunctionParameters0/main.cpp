@@ -3,11 +3,6 @@
 
 void FileAccess(bool open, bool close, bool readonly);
 
-void Use()
-{
-  FileAccess(true, false, true);
-}
-
 void FileAccess(bool open, bool close, bool readonly) {}
 
 void LLVM()
@@ -17,7 +12,7 @@ void LLVM()
 
 int main()
 {
-  Use();
+  FileAccess(true, false, true);
 
   LLVM();
 }

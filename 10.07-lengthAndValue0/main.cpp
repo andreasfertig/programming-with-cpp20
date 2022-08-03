@@ -11,21 +11,6 @@ bool write(const char*, size_t)
 bool Send(const char* data, size_t size);
 void Read(char* data, size_t size);
 
-void Use()
-{
-  char buffer[1'024]{};
-
-  Read(buffer, sizeof(buffer));
-  Send(buffer, sizeof(buffer));
-
-  // some code in-between
-
-  char buffer2[2'048]{};
-
-  Read(buffer, sizeof(buffer2));
-  Send(buffer, sizeof(buffer2));
-}
-
 bool Send(const char* data, size_t size)
 {
   if(!data) { return false; }
@@ -42,5 +27,15 @@ void Read(char* data, size_t size)
 
 int main()
 {
-  Use();
+  char buffer[1'024]{};
+
+  Read(buffer, sizeof(buffer));
+  Send(buffer, sizeof(buffer));
+
+  // some code in-between
+
+  char buffer2[2'048]{};
+
+  Read(buffer, sizeof(buffer2));
+  Send(buffer, sizeof(buffer2));
 }

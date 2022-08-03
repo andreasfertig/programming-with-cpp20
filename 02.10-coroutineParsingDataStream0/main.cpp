@@ -2,12 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include <cassert>
-#if __has_include(<experimental/coroutine>)
-#include <experimental/coroutine>
-namespace std { using namespace std::experimental; }
-#elif __has_include(<coroutine>)
 #include <coroutine>
-#endif
 #include <cstdio>
 #include <functional>
 #include <optional>
@@ -92,7 +87,7 @@ struct awaitable_promise_type_base {
   struct awaiter {
     std::optional<T>& mRecentSignal;
 
-    bool await_ready() { return mRecentSignal.has_value(); }
+    bool await_ready() const { return mRecentSignal.has_value(); }
     void await_suspend(std::coroutine_handle<>) {}
 
     T await_resume()
@@ -245,9 +240,15 @@ void ProcessStream(generator<byte>& stream, FSM& parse)
 }
 
 
-void Use()
+
+void HandleFrame(const std::string& frame)
 {
-std::vector<byte> fakeBytes1{
+  printf("%s\n", frame.c_str());
+}
+
+int main()
+{
+  std::vector<byte> fakeBytes1{
     0x70_B, ESC, SOF, ESC, 
     'H'_B, 'e'_B, 'l'_B, 'l'_B, 'o'_B, ESC, SOF, 
     0x7_B, ESC, SOF};
@@ -270,15 +271,4 @@ auto stream2 = sender(std::move(fakeBytes2));
 // #F We still use the former p and feed it with new bytes
 ProcessStream(stream2, p);
 
-}
-
-
-void HandleFrame(const std::string& frame)
-{
-  printf("%s\n", frame.c_str());
-}
-
-int main()
-{
-  Use();
 }

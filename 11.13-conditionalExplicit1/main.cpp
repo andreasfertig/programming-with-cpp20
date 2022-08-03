@@ -17,12 +17,6 @@ struct Wrapper {
 
 void Fun(Wrapper<A> a);  // #A Takes Wrapper<A> now
 
-void Use()
-{
-  Fun(A{});
-  Fun(B{});  // #B Does compile!
-}
-
 template<typename T>
 template<typename U>
 Wrapper<T>::Wrapper(const U&)
@@ -32,5 +26,6 @@ void Fun(Wrapper<A> a) {}
 
 int main()
 {
-  Use();
+  Fun(A{});
+  Fun(B{});  // #B Does compile!
 }

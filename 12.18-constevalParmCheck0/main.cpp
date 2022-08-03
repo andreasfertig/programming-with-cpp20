@@ -70,14 +70,9 @@ string format(std::string_view fmt, const Args&... args)
   return out;
 }
 
-void Use()
+int main()
 {
   auto str = format("ds", 12457, " hello");
 
   printf("'%s'", str.data());
-}
-
-int main()
-{
-  Use();
 }

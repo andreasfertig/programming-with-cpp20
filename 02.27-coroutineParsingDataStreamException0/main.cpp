@@ -2,14 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include <cassert>
-#if __has_include(<experimental/coroutine>)
-#  include <experimental/coroutine>
-namespace std {
-  using namespace std::experimental;
-}
-#elif __has_include(<coroutine>)
-#  include <coroutine>
-#endif
+#include <coroutine>
 #include <cstdio>
 #include <functional>
 #include <iostream>
@@ -290,8 +283,35 @@ generator<byte> sender(std::vector<byte> fakeBytes)
 void HandleFrame(const std::string& frame);
 void PrintException(std::runtime_error& rt);
 
-void Use()
+void HandleFrame(const std::string& frame)
 {
+  printf("%s\n", frame.c_str());
+}
+
+void PrintException(std::runtime_error& rt)
+{
+  std::cout << "ex: " << rt.what() << '\n';
+}
+
+int main(int argc, char* argv[])
+{
+
+  if(argc > 2) {
+    rethrow = atoi(argv[1]);
+
+    if("ParseBegin"s == argv[2]) {
+      ex = Ex::ParseBegin;
+    } else if("ParseWhileRunning"s == argv[2]) {
+      ex = Ex::ParseWhileRunning;
+    } else if("InitialSuspend"s == argv[2]) {
+      ex = Ex::InitialSuspend;
+    } else if("YieldValue"s == argv[2]) {
+      ex = Ex::YieldValue;
+    } else if("GetReturnObject"s == argv[2]) {
+      ex = Ex::GetReturnObject;
+    }
+  }
+
   std::vector<byte> fakeBytes1{0x70_B,
                                ESC,
                                SOF,
@@ -327,36 +347,4 @@ void Use()
   } catch(std::runtime_error& rt) {
     PrintException(rt);
   }
-}
-
-void HandleFrame(const std::string& frame)
-{
-  printf("%s\n", frame.c_str());
-}
-
-void PrintException(std::runtime_error& rt)
-{
-  std::cout << "ex: " << rt.what() << '\n';
-}
-
-int main(int argc, char* argv[])
-{
-
-  if(argc > 2) {
-    rethrow = atoi(argv[1]);
-
-    if("ParseBegin"s == argv[2]) {
-      ex = Ex::ParseBegin;
-    } else if("ParseWhileRunning"s == argv[2]) {
-      ex = Ex::ParseWhileRunning;
-    } else if("InitialSuspend"s == argv[2]) {
-      ex = Ex::InitialSuspend;
-    } else if("YieldValue"s == argv[2]) {
-      ex = Ex::YieldValue;
-    } else if("GetReturnObject"s == argv[2]) {
-      ex = Ex::GetReturnObject;
-    }
-  }
-
-  Use();
 }

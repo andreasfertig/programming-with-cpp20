@@ -56,15 +56,10 @@ void WithStdFormatUseArgumentIndex()
   }
 }
 
-void Use()
+int main()
 {
   WithStdFormat();
   WithStdFormatUseArgumentIndex();
-}
-
-int main()
-{
-  Use();
 }
 
 #else

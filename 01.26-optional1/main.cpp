@@ -6,7 +6,7 @@
 struct copyable {};
 
 struct notCopyable {
-  notCopyable(const notCopyable&) = delete;
+  notCopyable(const notCopyable&)           = delete;
   notCopyable operator=(const notCopyable&) = delete;
 };
 
@@ -20,7 +20,7 @@ public:
 };
 
 struct NotCopyable {
-  NotCopyable(const NotCopyable&) = delete;
+  NotCopyable(const NotCopyable&)            = delete;
   NotCopyable& operator=(const NotCopyable&) = delete;
 };
 

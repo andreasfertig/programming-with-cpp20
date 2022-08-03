@@ -116,7 +116,7 @@ void WithStdFormat()
   }
 }
 
-void Use()
+int main()
 {
   WithPrintf();
   std::cout << '\n';
@@ -130,11 +130,6 @@ void Use()
 
   std::cout << '\n';
   WithStdFormat();
-}
-
-int main()
-{
-  Use();
 }
 
 #else

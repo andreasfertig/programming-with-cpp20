@@ -16,7 +16,7 @@ auto addCurrency(const std::string& suffix)
     [suffix](auto i) { return std::to_string(i) + suffix; });
 }
 
-void Use()
+int main()
 {
   const std::vector prices{3.95, 6.0, 95.4, 10.95, 12.90, 5.50};
 
@@ -27,11 +27,6 @@ void Use()
     | addCurrency(" €");
 
   for(const auto& e : subView) { std::cout << e << '\n'; }
-}
-
-int main()
-{
-  Use();
 }
 
 #else

@@ -33,14 +33,9 @@ constexpr Point move(Point p, double x, double y)
   return p;
 }
 
-void Use()
+int main()
 {
   constexpr Point p = move({2, 2}, 3, 2);
 
   printf("x:%lf y:%lf\n", p.GetX(), p.GetY());
-}
-
-int main()
-{
-  Use();
 }

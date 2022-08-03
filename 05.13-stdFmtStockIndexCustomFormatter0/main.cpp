@@ -1,8 +1,7 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(                                                   \
-  <format>) and not defined(__clang__) && not defined(_MSC_VER)
+#if __has_include(<format>) and not defined(__clang__)
 #  include <format>
 #  include <iomanip>
 #  include <iostream>
@@ -58,12 +57,12 @@ std::vector<StockIndex> GetIndices()
 
 template<>
 struct std::formatter<StockIndex> {
-  constexpr auto parse(format_parse_context& ctx)
+  constexpr auto parse(std::format_parse_context& ctx)
   {
     return ctx.begin();
   }
 
-  auto format(const StockIndex& index, format_context& ctx)
+  auto format(const StockIndex& index, std::format_context& ctx)
   {
     return std::format_to(ctx.out(),
                           "{:10}  {:>8.2f}  {:>6.2f} {:.2f}%",
@@ -74,16 +73,11 @@ struct std::formatter<StockIndex> {
   }
 };
 
-void Use()
+int main()
 {
   for(const auto& index : GetIndices()) {
     std::cout << std::format("{}\n", index);
   }
-}
-
-int main()
-{
-  Use();
 }
 
 #else

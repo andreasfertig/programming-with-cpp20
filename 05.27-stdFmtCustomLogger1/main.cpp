@@ -36,7 +36,7 @@ log(LogLevel level, std::string_view fmt, const auto&... args)
   vlog(level, fmt, std::make_format_args(args...));
 }
 
-void Use()
+int main()
 {
   const std::string share{"Amazon"};
   const double      price{3'117.02};
@@ -48,11 +48,6 @@ void Use()
 
   errno = 4;
   log(LogLevel::Error, "Unknown stock, errno: {}", errno);
-}
-
-int main()
-{
-  Use();
 }
 
 #else

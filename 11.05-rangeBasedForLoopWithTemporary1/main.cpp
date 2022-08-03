@@ -18,14 +18,9 @@ Keeper GetKeeper()
   return {};
 }
 
-void Use()
+int main()
 {
   for(auto&& items = GetKeeper(); auto& item : items.items()) {
     std::cout << item << '\n';
   }
-}
-
-int main()
-{
-  Use();
 }

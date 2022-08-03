@@ -10,8 +10,9 @@
 
 using namespace std::literals;
 
-void Use()
+int main()
 {
+#  if not(defined(__GNUC__) && !defined(__clang__))
   const double pi = 3.14;
   const int    i  = 1'024;
 
@@ -33,12 +34,7 @@ void Use()
   std::cout
     << "\nint with format(...) after setting global loc\n";
   std::cout << std::format("1'024 in US: {:L}\n", i);
-}
 
-int main()
-{
-#  if not(defined(__GNUC__) && !defined(__clang__))
-  Use();
 #  endif
 }
 

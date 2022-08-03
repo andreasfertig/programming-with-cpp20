@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: MIT
 
 #include <algorithm>
+#include <cstdio>
 #include <string_view>
 #include <utility>
 
 #include <version>
 
-#if not defined(_MSC_VER)
-#  if not(__cpp_lib_constexpr_string > 201911)
+#if not(__cpp_lib_constexpr_string > 201911)
 class string {
 public:
   constexpr string() = default;
@@ -87,10 +87,10 @@ private:
     _length = 0;
   }
 };
-#  else
-#    include <string>
+#else
+#  include <string>
 using std::string;
-#  endif
+#endif
 
 constexpr string itoa(int num, int base = 10)
 {
@@ -178,20 +178,9 @@ string format(format_string<Args...> fmt, const Args&... args)
   return out;
 }
 
-void Use()
+int main()
 {
   auto str = format("ds", 12457, " hello");
 
   printf("'%s'", str.data());
-}
-#else
-void Use()
-{
-#  pragma message("not supported")
-}
-#endif
-
-int main()
-{
-  Use();
 }

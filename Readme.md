@@ -6,7 +6,7 @@
 
 ## Code examples
 
-This repository contains runnable source code examples from the 1. edition of [Programming with C++20 - Concepts, Coroutines, Ranges, and more](https://andreasfertig.info/books/programming-with-cpp20/), by [Andreas Fertig](https://andreasfertig.info).
+This repository contains runnable source code examples from the 1. edition of [Programming with C++20 - Concepts, Coroutines, Ranges, and more](https://andreasfertig.com/books/programming-with-cpp20/), by [Andreas Fertig](https://andreasfertig.com).
 
 ### The layout of the examples
 
