@@ -34,7 +34,7 @@ requires(Args... args)
 }
 
 
-auto add(Args&&... args)
+auto add(Args&&... args) noexcept
 {
   return (... + args);
 }

@@ -9,10 +9,7 @@
 #include <vector>
 
 template<class I>
-concept random_access_iterator = not requires(I t)
-{
-  t.sort();
-};
+concept random_access_iterator = not requires(I t) { t.sort(); };
 
 template<random_access_iterator T>
 void PrintSorted(T c)
@@ -32,10 +29,7 @@ void sortedVector()
 }
 
 template<typename T>
-concept HasSortMethod = requires(T t)
-{
-  t.sort();
-};
+concept HasSortMethod = requires(T t) { t.sort(); };
 
 template<HasSortMethod T>
 void PrintSorted(T c)

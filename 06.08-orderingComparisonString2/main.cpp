@@ -25,7 +25,7 @@ public:
   {
     if(mLen != other.mLen) { return false; }  // #B We already had this
 
-    return Compare(*this, other) == 0;  // #C Compare does the work
+    return Compare(*this, other) == 0;        // #C Compare does the work
   }
 
 private:

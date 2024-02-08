@@ -1,7 +1,7 @@
 # Copyright (c) Andreas Fertig.
 # SPDX-License-Identifier: MIT
 
-cmake_minimum_required(VERSION 3.16.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.28.2 FATAL_ERROR)
 
 set(CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 20)
@@ -84,7 +84,8 @@ else()
 
     else()
       add_definitions(-fcoroutines) # required for GCC-10    
-      
+      add_definitions(-Wno-tautological-compare)
+
     endif()
 endif()
 

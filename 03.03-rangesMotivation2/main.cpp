@@ -1,10 +1,9 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<ranges>) and not defined(__clang__)
-#  include <algorithm>
-#  include <ranges>
-#  include <string>
+#include <algorithm>
+#include <ranges>
+#include <string>
 
 int main()
 {
@@ -13,10 +12,3 @@ int main()
 
   const bool equal = std::ranges::equal(firstText, secondText);
 }
-#else
-int main()
-{
-
-#  pragma message("not supported")
-}
-#endif

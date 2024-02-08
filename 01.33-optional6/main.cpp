@@ -13,7 +13,7 @@ struct COMLike {
 
 void COMLike::Release()
 {
-  printf("release\n");
+  puts("release");
 }
 
 struct COMLikeTrivial {
@@ -24,16 +24,12 @@ struct COMLikeTrivial {
 
 void COMLikeTrivial::Release()
 {
-  printf("release trivial\n");
+  puts("release trivial");
 }
 
 template<typename T>
-concept HasRelease = requires(T t)
-{
-  t.Release();
-};
+concept HasRelease = requires(T t) { t.Release(); };
 
-#if not defined(__clang__)
 template<typename T>
 concept NotTriviallyDestructible =
   not std::is_trivially_destructible_v<T>;
@@ -44,22 +40,24 @@ public:
   optional() = default;
 
   // #A Only if not trivially destructible
-  ~optional() requires NotTriviallyDestructible<T>;
+  ~optional()
+    requires NotTriviallyDestructible<T>;
 
   // #B If not trivially destructible and has Release method
-  ~optional() requires NotTriviallyDestructible<T> and
-    HasRelease<T>;
+  ~optional()
+    requires NotTriviallyDestructible<T> and HasRelease<T>;
 
   // #C Trivial and has Release method
-  ~optional() requires HasRelease<T>
+  ~optional()
+    requires HasRelease<T>
   {
     if(has_value) { value.as()->Release(); }
   }
 
   ~optional() = default;
 
-  optional(
-    const optional&) requires std::is_copy_constructible_v<T>
+  optional(const optional&)
+    requires std::is_copy_constructible_v<T>
   = default;
 
 private:
@@ -83,21 +81,21 @@ private:
 };
 
 template<typename T>
-optional<T>::~optional() requires NotTriviallyDestructible<T>
+optional<T>::~optional()
+  requires NotTriviallyDestructible<T>
 {
   if(has_value) { value.as()->~T(); }
 }
 
 template<typename T>
-optional<T>::~optional() requires NotTriviallyDestructible<T> &&
-  HasRelease<T>
+optional<T>::~optional()
+  requires NotTriviallyDestructible<T> && HasRelease<T>
 {
   if(has_value) {
     value.as()->Release();
     value.as()->~T();
   }
 }
-#endif
 
 struct NotCopyable {
   NotCopyable(const NotCopyable&)            = delete;
@@ -115,7 +113,6 @@ static_assert(not std::is_trivially_destructible_v<
 
 int main()
 {
-#if not defined(__clang__)
   static_assert(
     not std::is_copy_constructible_v<optional<NotCopyable>>);
   static_assert(std::is_copy_constructible_v<optional<int>>);
@@ -131,8 +128,4 @@ int main()
   optional<COMLike>                   o{};
   optional<COMLikeTrivial>            ot{};
   optional<TriviallyDestructible>     otd{};
-
-#else
-#  pragma message("not supported")
-#endif
 }

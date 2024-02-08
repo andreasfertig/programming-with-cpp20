@@ -8,12 +8,11 @@ template<typename T, typename... Ts>
 constexpr bool are_same_v = std::conjunction_v<std::is_same<T, Ts>...>;
 
 template<typename... Args>
-requires
+  requires
 
-  requires(Args... args)
-{
-  (... + args);  // #C SR: args  provides +
-}
+  requires(Args... args) {
+    (... + args);  // #C SR: args  provides +
+  }
 
 auto add(const Args&... args)
 {

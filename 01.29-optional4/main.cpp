@@ -13,14 +13,11 @@ struct COMLike {
 
 void COMLike::Release()
 {
-  printf("release\n");
+  puts("release");
 }
 
 template<typename T>
-concept HasRelease = requires(T t)
-{
-  t.Release();
-};
+concept HasRelease = requires(T t) { t.Release(); };
 
 #if not defined(_MSC_VER) && not defined(__clang__)
 template<typename T>
@@ -29,14 +26,16 @@ public:
   optional() = default;
 
   // #A Only if not trivially destructible
-  ~optional() requires(not std::is_trivially_destructible_v<T>)
+  ~optional()
+    requires(not std::is_trivially_destructible_v<T>)
   {
     if(has_value) { value.as()->~T(); }
   }
 
   // #B If not trivially destructible and has Release method
-  ~optional() requires(not std::is_trivially_destructible_v<T> and
-                       HasRelease<T>)
+  ~optional()
+    requires(not std::is_trivially_destructible_v<T> and
+             HasRelease<T>)
   {
     if(has_value) {
       value.as()->Release();
@@ -46,7 +45,8 @@ public:
 
   ~optional() = default;
 
-  optional(const optional&) requires std::is_copy_constructible_v<T>
+  optional(const optional&)
+    requires std::is_copy_constructible_v<T>
   = default;
 
 private:

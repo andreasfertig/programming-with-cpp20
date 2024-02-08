@@ -1,11 +1,10 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>) and not defined(__clang__)
-#  include <array>
-#  include <format>
-#  include <iostream>
-#  include <string_view>
+#include <array>
+#include <format>
+#include <iostream>
+#include <string_view>
 
 int main()
 {
@@ -15,10 +14,3 @@ int main()
 
   std::cout << buffer.data() << '\n';
 }
-
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

@@ -1,25 +1,34 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(                                                   \
-  <format>) and not defined(__clang__) && not defined(_MSC_VER)
-#  include <array>
-#  include <chrono>
-#  include <format>
-#  include <iostream>
-#  include <string_view>
+#include <array>
+#include <chrono>
+#include <format>
+#include <iostream>
+#include <string_view>
+
+using namespace std::string_view_literals;
+using namespace std::string_literals;
+
+// Part of C++23's STL
+template<typename T>
+constexpr std::underlying_type_t<T> to_underlying(T value)
+{
+  return static_cast<std::underlying_type_t<T>>(value);
+}
 
 enum LogLevel { Info, Warning, Error };
 
 template<>
-struct std::formatter<LogLevel> : std::formatter<const char*> {
-  inline static const char* level_names[] = {"Info",
-                                             "Warning",
-                                             "Error"};
+struct std::formatter<LogLevel> : std::formatter<std::string_view> {
+  inline static std::array levelNames{"Info"sv,
+                                      "Warning"sv,
+                                      "Error"sv};
 
-  auto format(LogLevel c, format_context& ctx)
+  auto format(LogLevel c, auto& ctx) const
   {
-    return std::formatter<const char*>::format(level_names[c], ctx);
+    return std::formatter<std::string_view>::format(
+      levelNames.at(to_underlying(c)), ctx);
   }
 };
 
@@ -38,17 +47,17 @@ constexpr auto makeBraces()
   return braces;
 }
 
-std::time_t GetTime()
+std::chrono::time_point<std::chrono::system_clock> GetTime()
 {
   //  return std::time(nullptr);
-  return 1605722947;
+  //  return 1605722947;
+  return std::chrono::system_clock::now();
 }
 
 void vlog(std::string_view fmt, std::format_args&& args)
 {
-  const std::time_t t = GetTime();
-  std::clog << std::format("[{:%Y-%m-%d-%H:%M:%S}] ",
-                           *std::localtime(&t))
+  const auto t = GetTime();
+  std::clog << std::format("[{:%Y-%m-%d-%H:%M:%S}] "sv, t)
             << std::vformat(fmt, args);
 }
 
@@ -64,18 +73,11 @@ constexpr void log(LogLevel level, const auto&... args)
 int main()
 {
   int         x{4};
-  std::string share{"Amazon"};
+  std::string share{"Amazon"s};
   double      d{3'117.02};
 
-  log(LogLevel::Info, "Share price", share, "very high:", d);
+  log(LogLevel::Info, "Share price"sv, share, "very high:"sv, d);
 
   errno = 4;
-  log(LogLevel::Error, "Unknown stock, errno", errno);
+  log(LogLevel::Error, "Unknown stock, errno"sv, errno);
 }
-
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

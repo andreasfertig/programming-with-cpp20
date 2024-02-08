@@ -7,5 +7,5 @@ int main()
 {
   const std::string s{"Hello, C++20"};
 
-  if(s.find("Hello") != std::string::npos) { printf("Found!\n"); }
+  if(s.find("Hello") != std::string::npos) { puts("Found!"); }
 }

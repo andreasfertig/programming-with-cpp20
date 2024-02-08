@@ -8,13 +8,13 @@ class optional {
 public:
   optional() = default;
 
-  optional(
-    const optional&) requires std::is_copy_constructible_v<T>;
+  optional(const optional&)
+    requires std::is_copy_constructible_v<T>;
 };
 
 template<typename T>
-optional<T>::optional(
-  const optional<T>&) requires std::is_copy_constructible_v<T>
+optional<T>::optional(const optional<T>&)
+  requires std::is_copy_constructible_v<T>
 {}
 
 struct NotCopyable {

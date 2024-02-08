@@ -4,8 +4,8 @@
 #include <iostream>
 
 #ifdef WILL_NOT_COMPILE
-struct Container {};    // #A Container without begin
-int* begin(Container);  // #B Free-function begin for Container
+struct Container {};     // #A Container without begin
+int* begin(Container);   // #B Free-function begin for Container
 
 struct OtherContainer {  // #C Container with begin
   int* begin();

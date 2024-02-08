@@ -3,19 +3,7 @@
 
 #if not(defined(__GNUC__) && !defined(__clang__))
 
-template<typename T>
-class unique_ptr {
-public:
-  constexpr unique_ptr(T* data) noexcept
-  : _data{data}
-  {}
-  constexpr ~unique_ptr() noexcept { delete _data; }
-
-  constexpr T* operator->() const noexcept { return _data; }
-
-private:
-  T* _data{};
-};
+#  include <memory>
 
 struct Car {  // #A Base class for all cars
   virtual ~Car()                      = default;
@@ -33,12 +21,12 @@ struct Tesla : Car {
   constexpr int speed() const override { return 9; }
 };
 
-constexpr unique_ptr<Car> CreateCar(int i)
+constexpr std::unique_ptr<Car> CreateCar(int i)
 {
   switch(i) {
-    case 0: return new Mercedes{};
-    case 1: return new Toyota{};
-    case 2: return new Tesla{};
+    case 0: return std::make_unique<Mercedes>();
+    case 1: return std::make_unique<Toyota>();
+    case 2: return std::make_unique<Tesla>();
   }
 
   return nullptr;

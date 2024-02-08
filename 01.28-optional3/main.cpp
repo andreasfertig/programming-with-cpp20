@@ -23,15 +23,16 @@ public:
   // The real constructor is omitted here because it
   // doesn't matter
 
-  ~optional() requires(not std::is_trivially_destructible_v<T>)
+  ~optional()
+    requires(not std::is_trivially_destructible_v<T>)
   {
     if(has_value) { value.as()->~T(); }
   }
 
   ~optional() = default;
 
-  optional(
-    const optional&) requires std::is_copy_constructible_v<T>
+  optional(const optional&)
+    requires std::is_copy_constructible_v<T>
   = default;
 
 private:
@@ -56,7 +57,6 @@ static_assert(std::is_trivially_destructible_v<storage_t<int>>);
 
 int main()
 {
-#if not defined(__clang__)
   static_assert(
     not std::is_copy_constructible_v<optional<NotCopyable>>);
   static_assert(std::is_copy_constructible_v<optional<int>>);
@@ -65,7 +65,4 @@ int main()
                 optional<Not_TriviallyDestructible>>);
   static_assert(
     std::is_trivially_destructible_v<optional<int>>);
-#else
-#  pragma message("not supported")
-#endif
 }

@@ -4,7 +4,7 @@ name: ci
 on: [push, pull_request]
 
 env:
-  CMAKE_VERSION: 3.16.2
+  CMAKE_VERSION: 3.28.2
   NINJA_VERSION: 1.10.0
 
 jobs:
@@ -15,22 +15,22 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        # GCC-10
+        # GCC-13
         - {
-            name: "Linux GCC 11",
-            os: ubuntu-20.04,
+            name: "Linux GCC 13",
+            os: ubuntu-22.04,
             build_type: Release,
-            cxx: "g++-11",
-            gcc_version: 11,
+            cxx: "g++-13",
+            gcc_version: 13,
           }
 
-        # Clang-14
+        # Clang-17
         - {
-            name: "Linux Clang 14",
-            os: ubuntu-20.04,
+            name: "Linux Clang 17",
+            os: ubuntu-22.04,
             build_type: Release,
-            cxx: "clang++-14",
-            clang_version: 14,
+            cxx: "clang++-17",
+            clang_version: 17,
             libcxx: true
           }
 
@@ -52,7 +52,7 @@ jobs:
           }
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 2
 
@@ -67,16 +67,16 @@ jobs:
 
         if ("${{ runner.os }}" STREQUAL "Windows")
           set(ninja_suffix "win.zip")
-          set(cmake_suffix "win64-x64.zip")
-          set(cmake_dir "cmake-${cmake_version}-win64-x64/bin")
+          set(cmake_suffix "windows-x86_64.zip")
+          set(cmake_dir "cmake-${cmake_version}-windows-x86_64/bin")
         elseif ("${{ runner.os }}" STREQUAL "Linux")
           set(ninja_suffix "linux.zip")
-          set(cmake_suffix "Linux-x86_64.tar.gz")
-          set(cmake_dir "cmake-${cmake_version}-Linux-x86_64/bin")
+          set(cmake_suffix "linux-x86_64.tar.gz")
+          set(cmake_dir "cmake-${cmake_version}-linux-x86_64/bin")
         elseif ("${{ runner.os }}" STREQUAL "macOS")
           set(ninja_suffix "mac.zip")
-          set(cmake_suffix "Darwin-x86_64.tar.gz")
-          set(cmake_dir "cmake-${cmake_version}-Darwin-x86_64/CMake.app/Contents/bin")
+          set(cmake_suffix "macos-universal.tar.gz")
+          set(cmake_dir "cmake-${cmake_version}-macos-universal/CMake.app/Contents/bin")
         endif()
 
         set(ninja_url "https://github.com/ninja-build/ninja/releases/download/v${ninja_version}/ninja-${ninja_suffix}")
@@ -98,8 +98,8 @@ jobs:
           )
         endif()
 
-    - name: Install Clang 14
-      id: install_clang_11
+    - name: Install Clang 17
+      id: install_clang_17
       if: startsWith(matrix.config.os, 'ubuntu') && startsWith(matrix.config.cxx, 'clang++-')
       shell: bash
       working-directory: ${{ env.HOME }}
@@ -109,9 +109,9 @@ jobs:
         sudo ./llvm.sh ${{ matrix.config.clang_version }}
         sudo apt-get install -y libunwind-${{ matrix.config.clang_version }}-dev libunwind-${{ matrix.config.clang_version }}
 
-    - name: Install g++ 11
-      id: install_gcc_11
-      if: startsWith(matrix.config.os, 'ubuntu') && ( matrix.config.cxx == 'g++-11' )
+    - name: Install g++ 13
+      id: install_gcc_13
+      if: startsWith(matrix.config.os, 'ubuntu') && ( matrix.config.cxx == 'g++-13' )
       shell: bash
       working-directory: ${{ env.HOME }}
       env:
@@ -121,7 +121,7 @@ jobs:
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt-get update
         sudo apt-get install g++-${{ matrix.config.gcc_version }}
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 100
 
     - name: Install libc++
       id: install_libcxx

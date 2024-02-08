@@ -150,7 +150,7 @@ struct basic_format_string {
   std::string_view str;  // #A Holds the actual format string
 
   template<class T>
-  requires std::is_convertible_v<const T&, std::string_view>
+    requires std::is_convertible_v<const T&, std::string_view>
   consteval basic_format_string(
     const T& s)  // #B A consteval constructor
   : str{s}

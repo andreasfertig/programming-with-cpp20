@@ -5,9 +5,8 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <cstdio>
 #include <span>
-
-#if __has_include(<ranges>) and not defined(__clang__)
 
 template<typename CharT, std::size_t N>
 struct fixed_string {
@@ -80,11 +79,9 @@ constexpr auto get(const std::span<const CharT>& str)
 template<typename CharT, typename... Ts>
 constexpr bool IsMatching(std::span<const CharT> str)
 {
-  return [&]<size_t... I>(std::index_sequence<I...>)
-  {
+  return [&]<size_t... I>(std::index_sequence<I...>) {
     return ((match<Ts>(get<I>(str))) && ...);
-  }
-  (std::make_index_sequence<sizeof...(Ts)>{});
+  }(std::make_index_sequence<sizeof...(Ts)>{});
 }
 
 template<typename... Args>
@@ -127,12 +124,4 @@ int main()
 
   char fmt[]{"Hello, %s"};
   print(fmt, "C++20");
-
-  // fmt("test");
 }
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

@@ -41,8 +41,8 @@ int main()
   // Point bNarrowing{3.5};// #J Does not allow narrowing
   Point pNarrowing(3.5);  // #K Allows narrowing
 
-  Point bValueInit{};  // #L Default or zero initialization
-  Point pValueInit();  // #M Still a function declaration
+  Point bValueInit{};     // #L Default or zero initialization
+  Point pValueInit();     // #M Still a function declaration
 
   // #N Initialization of a built-in type
   int bBuiltIn{4};

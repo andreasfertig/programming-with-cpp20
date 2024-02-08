@@ -14,8 +14,8 @@ void stl()
 {
   std::vector<int> numbers{2, 3, 4, 5, 6};  // #A
 
-  std::vector<int> oddNumbers{};  // #B
-  std::copy_if(begin(numbers),    // #C
+  std::vector<int> oddNumbers{};            // #B
+  std::copy_if(begin(numbers),              // #C
                end(numbers),
                std::back_inserter(oddNumbers),
                is_odd);

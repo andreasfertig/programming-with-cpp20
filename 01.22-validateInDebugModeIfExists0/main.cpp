@@ -4,10 +4,7 @@
 #include <cstdio>
 
 template<typename T>
-concept SupportsValidation = requires(T t)
-{
-  t.validate();
-};
+concept SupportsValidation = requires(T t) { t.validate(); };
 
 template<typename T>
 void Send(const T& data)

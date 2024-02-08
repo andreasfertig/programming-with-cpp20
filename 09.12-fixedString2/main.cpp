@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <iostream>
 
-#if __has_include(<ranges>) and not defined(__clang__)
 template<typename CharT, std::size_t N>
 struct fixed_string {
   CharT data[N]{};
@@ -53,9 +52,3 @@ int main()
 
   print("%s, %s"_fs, "Hello", "C++20");
 }
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

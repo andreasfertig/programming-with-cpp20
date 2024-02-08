@@ -14,16 +14,16 @@ concept AlwaysTrue = true;
 
 template<typename T, typename U>
 // #A Inverting IsSame with not
-requires(not IsSame<T, U>) auto add(const T& t, const U& u)
+  requires(not IsSame<T, U>)
+auto add(const T& t, const U& u)
 {
   return t + u;
 }
 
 template<typename T, typename U>
 // #B Inverting IsSame with not
-requires((not IsSame<T, U>)and AlwaysTrue<T>) auto add(
-  const T& t,
-  const U& u)
+  requires((not IsSame<T, U>) and AlwaysTrue<T>)
+auto add(const T& t, const U& u)
 {
   return t + u;
 }

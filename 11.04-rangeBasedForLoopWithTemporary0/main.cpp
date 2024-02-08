@@ -1,8 +1,9 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#include <iostream>
-#include <vector>
+#if not(defined(__GNUC__) && !defined(__clang__))
+#  include <iostream>
+#  include <vector>
 
 class Keeper {  // #A
   std::vector<int> data{2, 3, 4};
@@ -26,3 +27,9 @@ int main()
     std::cout << item << '\n';
   }
 }
+#else
+int main()
+{
+#  pragma message("GCC detects the error")
+}
+#endif

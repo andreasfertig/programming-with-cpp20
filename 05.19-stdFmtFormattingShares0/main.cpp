@@ -1,13 +1,12 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>) and not defined(__clang__)
-#  include <format>
-#  include <iomanip>
-#  include <iostream>
-#  include <locale>
-#  include <string>
-#  include <vector>
+#include <format>
+#include <iomanip>
+#include <iostream>
+#include <locale>
+#include <string>
+#include <vector>
 
 class Share {
   std::string mName;
@@ -61,10 +60,3 @@ int main()
   WithStdFormat();
   WithStdFormatUseArgumentIndex();
 }
-
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

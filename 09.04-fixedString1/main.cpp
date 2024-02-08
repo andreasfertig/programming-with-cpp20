@@ -6,7 +6,6 @@
 #include <iostream>
 #include <version>
 
-#if not defined(__clang__)
 template<typename CharT, std::size_t N>
 struct fixed_string {
   CharT data[N]{};
@@ -62,9 +61,3 @@ int main()
   fc.print();  // #D For those who believe it only if they see
                // it
 }
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

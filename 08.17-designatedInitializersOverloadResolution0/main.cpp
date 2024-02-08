@@ -20,12 +20,12 @@ void Add(const Point2D& p, int v);
 
 void Add(const Point& p, int v)
 {
-  printf("Point\n");
+  puts("Point");
 }
 
 void Add(const Point2D& p, int v)
 {
-  printf("Point2D\n");
+  puts("Point2D");
 }
 
 int main()

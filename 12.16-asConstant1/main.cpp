@@ -15,5 +15,5 @@ int main()
 {
   auto value2 = as_constant(ExpensiveCalculation(2));  // #B compile-time
 
-  ++value2;  // #C Compiles
+  ++value2;                                            // #C Compiles
 }

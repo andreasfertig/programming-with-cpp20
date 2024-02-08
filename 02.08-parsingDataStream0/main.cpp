@@ -68,7 +68,7 @@ int main()
   auto frameCompleteHandler = [](std::string& res) { printf("CCCB: %s\n", res.c_str()); };
   for(const auto& b : fakeBytes1) { ProcessNextByte(b, frameCompleteHandler); }
 
-  printf("----------\n");
+  puts("----------");
 
   const std::vector<byte> fakeBytes2{
     byte{'W'}, byte{'o'}, byte{'r'}, byte{'l'}, byte{'d'}, ESC, SOF, byte{0x99}};

@@ -1,11 +1,10 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<ranges>) and not defined(__clang__)
-#  include <algorithm>
-#  include <iostream>
-#  include <ranges>
-#  include <vector>
+#include <algorithm>
+#include <iostream>
+#include <ranges>
+#include <vector>
 
 bool is_odd(int num)
 {
@@ -31,9 +30,3 @@ int main()
 {
   ranges();
 }
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

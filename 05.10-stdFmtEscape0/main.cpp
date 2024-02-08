@@ -1,10 +1,9 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>) and not defined(__clang__)
-#  include <format>
-#  include <iostream>
-#  include <string>
+#include <format>
+#include <iostream>
+#include <string>
 
 int main()
 {
@@ -12,7 +11,3 @@ int main()
 
   std::cout << '\n';
 }
-
-#else
-int main() {}
-#endif

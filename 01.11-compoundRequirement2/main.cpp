@@ -30,7 +30,7 @@ concept Addable = requires(Args... args)
 
 template<typename... Args> 
 requires Addable<Args...>
-auto Add(Args&&... args)
+auto Add(Args&&... args) noexcept
 {
   return (... + args);
 }

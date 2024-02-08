@@ -10,14 +10,14 @@ template<typename T>
 concept AlwaysTrue = true;
 
 template<typename T, typename U>
-requires IsSame<T, U>
+  requires IsSame<T, U>
 auto add(const T& t, const U& u)
 {
   return t + u;
 }
 
 template<typename T, typename U>
-requires IsSame<T, U> and AlwaysTrue<T>
+  requires IsSame<T, U> and AlwaysTrue<T>
 auto add(const T& t, const U& u)
 {
   return t + u;

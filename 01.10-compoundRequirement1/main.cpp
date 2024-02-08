@@ -27,7 +27,7 @@ requires  requires(Args... args)
   requires sizeof...(Args) > 1;
   { (... + args) } noexcept -> same_as<first_arg_t<Args...>>;
 }
-auto Add(Args&&... args)
+auto Add(Args&&... args) noexcept
 {
   return (... + args);
 }

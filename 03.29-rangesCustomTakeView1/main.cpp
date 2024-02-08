@@ -1,18 +1,17 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<ranges>) and not defined(__clang__)
-#  include <algorithm>
-#  include <cassert>
-#  include <iostream>
-#  include <ranges>
-#  include <string>
-#  include <vector>
+#include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <ranges>
+#include <string>
+#include <vector>
 
 namespace rv = std::ranges::views;
 
 template<std::ranges::view R>
-requires std::ranges::view<R>
+  requires std::ranges::view<R>
 class custom_take_view
 : public std::ranges::view_interface<custom_take_view<R>> {
 private:
@@ -92,12 +91,3 @@ int main()
   std::ranges::copy(v,
                     std::ostream_iterator<int>(std::cout, " "));
 }
-
-#else
-
-int main()
-{
-#  pragma message("not supported")
-}
-
-#endif

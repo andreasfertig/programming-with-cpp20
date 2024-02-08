@@ -1,11 +1,10 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<ranges>) and not defined(__clang__)
-#  include <algorithm>
-#  include <iostream>
-#  include <ranges>
-#  include <vector>
+#include <algorithm>
+#include <iostream>
+#include <ranges>
+#include <vector>
 
 bool is_odd(int num)
 {
@@ -14,7 +13,7 @@ bool is_odd(int num)
 
 void ranges()
 {
-  std::vector<int> numbers{2, 3, 4, 5, 6};  // #A
+  std::vector<int> numbers{2, 3, 4, 5, 6};            // #A
 
   auto filter = std::views::filter(numbers, is_odd);  // #A
 
@@ -34,9 +33,3 @@ int main()
 {
   ranges();
 }
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

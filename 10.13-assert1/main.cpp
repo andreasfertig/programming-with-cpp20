@@ -1,10 +1,9 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<source_location>) && not defined(__clang__)
-#  include <iostream>
-#  include <source_location>
-#  include <string_view>
+#include <iostream>
+#include <source_location>
+#include <string_view>
 
 // #A Assert function taking condition, message, and source
 // location
@@ -25,9 +24,3 @@ int main()
   // #C A call to Assert with  information of Use
   Assert(1 != 2, "Not met");
 }
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

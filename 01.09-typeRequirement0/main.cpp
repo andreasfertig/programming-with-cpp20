@@ -5,8 +5,7 @@
 #include <vector>
 
 template<typename T>
-concept containerTypes = requires(T t)
-{  // #A Testing for various types in T
+concept containerTypes = requires(T t) {  // #A Testing for various types in T
   typename T::value_type;
   typename T::size_type;
   typename T::allocator_type;

@@ -1,13 +1,12 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>) and not defined(__clang__)
-#  include <format>
-#  include <iomanip>
-#  include <iostream>
-#  include <locale>
-#  include <string>
-#  include <vector>
+#include <format>
+#include <iomanip>
+#include <iostream>
+#include <locale>
+#include <string>
+#include <vector>
 
 class StockIndex {
   std::string mName{};
@@ -57,12 +56,9 @@ std::vector<StockIndex> GetIndices()
 
 template<>
 struct std::formatter<StockIndex> {
-  constexpr auto parse(std::format_parse_context& ctx)
-  {
-    return ctx.begin();
-  }
+  constexpr auto parse(auto& ctx) { return ctx.begin(); }
 
-  auto format(const StockIndex& index, std::format_context& ctx)
+  auto format(const StockIndex& index, auto& ctx) const
   {
     return std::format_to(ctx.out(),
                           "{:10}  {:>8.2f}  {:>6.2f} {:.2f}%",
@@ -79,10 +75,3 @@ int main()
     std::cout << std::format("{}\n", index);
   }
 }
-
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

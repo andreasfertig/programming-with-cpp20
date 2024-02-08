@@ -22,12 +22,11 @@ struct Price {
 
 #if(__cpp_generic_lambdas >= 201707)
 template<typename KEY, typename VALUE>
-using MapSortedByIsbn =
-  std::map<KEY,
-           VALUE,
-           decltype(
-             [](const auto& a,  // #A Using a generic lambda
-                const auto& b) { return a.isbn > b.isbn; })>;
+using MapSortedByIsbn = std::map<
+  KEY,
+  VALUE,
+  decltype([](const auto& a,  // #A Using a generic lambda
+              const auto& b) { return a.isbn > b.isbn; })>;
 
 namespace usingAliasVersion {
   // #A Define a using alias with the compare lambda which can

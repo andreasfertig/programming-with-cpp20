@@ -1,14 +1,13 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>) and not defined(__clang__)
-#  include <format>
-#  include <iomanip>
-#  include <iostream>
-#  include <locale>
-#  include <string>
-#  include <string_view>
-#  include <vector>
+#include <format>
+#include <iomanip>
+#include <iostream>
+#include <locale>
+#include <string>
+#include <string_view>
+#include <vector>
 
 using namespace std::literals;
 
@@ -64,7 +63,7 @@ struct std::formatter<StockIndex> {
 
   IndexFormat indexFormat{IndexFormat::Normal};
 
-  constexpr auto parse(format_parse_context& ctx)
+  constexpr auto parse(auto& ctx)
   {
     auto it  = ctx.begin();
     auto end = ctx.end();
@@ -86,7 +85,7 @@ struct std::formatter<StockIndex> {
     return it;
   }
 
-  auto format(const StockIndex& index, std::format_context& ctx)
+  auto format(const StockIndex& index, auto& ctx) const
   {
     if(IndexFormat::Short == indexFormat) {
       return std::format_to(ctx.out(),
@@ -124,10 +123,3 @@ int main()
     std::cout << std::format("{:p}\n", index);
   }
 }
-
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

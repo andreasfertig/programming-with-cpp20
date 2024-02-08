@@ -9,6 +9,7 @@
 #include <optional>
 #include <string>
 #include <type_traits>
+#include <utility>
 #include <vector>
 #include <version>
 
@@ -64,12 +65,12 @@ struct promise_type_base {
 
   std::suspend_always final_suspend() noexcept
   {
-    printf("final_suspend\n");
+    puts("final_suspend");
     return {};
   }
   G get_return_object()
   {
-    printf("get_return_object\n");
+    puts("get_return_object");
     ThrowIf(Ex::GetReturnObject, "get_return_object");
 
     return G{this};
@@ -77,7 +78,7 @@ struct promise_type_base {
 
   void unhandled_exception()
   {
-    printf("unhandled_exception\n");
+    puts("unhandled_exception");
     if(rethrow) {
       if(2 == rethrow) {
         auto exceptionPtr = std::current_exception();
@@ -93,7 +94,7 @@ struct promise_type_base {
         throw;
       }
     } else {
-      printf("do nothing\n");
+      puts("do nothing");
     }
   }
 

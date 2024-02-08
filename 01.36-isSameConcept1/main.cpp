@@ -11,7 +11,7 @@ concept AlwaysTrue = true;
 
 template<typename T, typename U>
 // #A The arguments are swapped T, U vs U, T
-requires IsSame<U, T>
+  requires IsSame<U, T>
 auto add(const T& t, const U& u)
 {
   return t + u;
@@ -19,7 +19,7 @@ auto add(const T& t, const U& u)
 
 template<typename T, typename U>
 // #B The arguments remain unchanged
-requires IsSame<T, U> and AlwaysTrue<T>
+  requires IsSame<T, U> and AlwaysTrue<T>
 auto add(const T& t, const U& u)
 {
   return t + u;

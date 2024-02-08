@@ -1,7 +1,7 @@
 # Copyright (c) Andreas Fertig.
 # SPDX-License-Identifier: MIT
 
-cmake_minimum_required(VERSION 3.16.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.28.2 FATAL_ERROR)
 
 project("Programming with C++20 - Concepts, Coroutines, Ranges, and more" CXX)
 

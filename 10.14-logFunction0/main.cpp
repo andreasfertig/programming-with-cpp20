@@ -1,10 +1,9 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>) and not defined(__clang__)
-#  include <format>
-#  include <iostream>
-#  include <string_view>
+#include <format>
+#include <iostream>
+#include <string_view>
 
 enum LogLevel { Info, Warning, Error };
 
@@ -24,19 +23,10 @@ void Log(LogLevel         level,
 }
 
 // #B Macro wrapper to call Log
-#  define LOG(level, fmt, ...)                                 \
-    Log(level, __FUNCTION__, __LINE__, fmt, __VA_ARGS__)
+#define LOG(level, fmt, ...)                                   \
+  Log(level, __FUNCTION__, __LINE__, fmt, __VA_ARGS__)
 
 int main()
 {
   LOG(LogLevel::Info, "hello {} {} {}", 2, 3, 4);
 }
-
-#else
-
-int main()
-{
-#  pragma message("not supported")
-}
-
-#endif

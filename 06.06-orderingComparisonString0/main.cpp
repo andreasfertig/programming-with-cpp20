@@ -41,22 +41,22 @@ public:
 
   friend bool operator>(const String& a, const String& b)
   {
-    return Ordering::GreaterThan == Compare(a, b);
+    return (b < a);
   }
 
   friend bool operator<=(const String& a, const String& b)
   {
-    return Ordering::GreaterThan != Compare(a, b);
+    return !(b < a);
   }
 
   friend bool operator>=(const String& a, const String& b)
   {
-    return Ordering::LessThan != Compare(a, b);
+    return !(a < b);
   }
 
 private:
-  const char*  mData;
-  const size_t mLen;
+  const char*  mData{};
+  const size_t mLen{};
 
   // #E The compare function which does the actual comparison.
   static Ordering Compare(const String& a, const String& b);

@@ -1,12 +1,11 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<ranges>) and not defined(__clang__)
-#  include <algorithm>
-#  include <iostream>
-#  include <ranges>
-#  include <string>
-#  include <vector>
+#include <algorithm>
+#include <iostream>
+#include <ranges>
+#include <string>
+#include <vector>
 
 int main()
 {
@@ -21,12 +20,3 @@ int main()
 
   for(const auto& e : subView) { std::cout << e << '\n'; }
 }
-
-#else
-
-int main()
-{
-#  pragma message("not supported")
-}
-
-#endif

@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 #include <compare>
+#include <cstdint>
 #include <cstdio>
 #include <string>
 
-#if not defined(__clang__)
 struct Address {
   std::string city;
   std::string street;
@@ -21,12 +21,3 @@ int main()
 
   printf("%d\n", a1 > a2);
 }
-
-#else
-
-int main()
-{
-#  pragma message("not supported")
-}
-
-#endif

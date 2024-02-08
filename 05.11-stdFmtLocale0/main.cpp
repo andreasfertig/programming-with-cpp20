@@ -1,18 +1,16 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>) and not defined(__clang__)
-#  include <clocale>
-#  include <format>
-#  include <iostream>
-#  include <locale>
-#  include <string>
+#include <clocale>
+#include <format>
+#include <iostream>
+#include <locale>
+#include <string>
 
 using namespace std::literals;
 
 int main()
 {
-#  if not(defined(__GNUC__) && !defined(__clang__))
   const double pi = 3.14;
   const int    i  = 1'024;
 
@@ -34,10 +32,4 @@ int main()
   std::cout
     << "\nint with format(...) after setting global loc\n";
   std::cout << std::format("1'024 in US: {:L}\n", i);
-
-#  endif
 }
-
-#else
-int main() {}
-#endif

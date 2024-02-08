@@ -21,19 +21,17 @@ template<typename... Args>
 using first_arg_t = typename first_arg<Args...>::type;
 
 template<typename... Args>
-concept Addable = requires(Args... args)
-{
+concept Addable = requires(Args... args) {
   (... + args);
   requires are_same_v<Args...>;
   requires sizeof...(Args) > 1;
   {
     (... + args)
-  }
-  noexcept->same_as<first_arg_t<Args...>>;
+  } noexcept -> same_as<first_arg_t<Args...>>;
 };
 
 template<typename... Args>
-requires Addable<Args...>
+  requires Addable<Args...>
 auto Add(Args&&... args)
 {
   return (... + args);
@@ -44,15 +42,15 @@ auto Add(Args&&... args)
 template<bool nexcept, bool operatorPlus, bool validReturnType>
 struct Stub {
   // #B Operator plus with controlled noexcept can be enabled
-  Stub& operator+(const Stub& rhs) noexcept(nexcept) requires(
-    operatorPlus&& validReturnType)
+  Stub& operator+(const Stub& rhs) noexcept(nexcept)
+    requires(operatorPlus && validReturnType)
   {
     return *this;
   }
 
   // #C Operator plus with invalid return type
-  int operator+(const Stub& rhs) noexcept(nexcept) requires(
-    operatorPlus && not validReturnType)
+  int operator+(const Stub& rhs) noexcept(nexcept)
+    requires(operatorPlus && not validReturnType)
   {
     return {};
   }

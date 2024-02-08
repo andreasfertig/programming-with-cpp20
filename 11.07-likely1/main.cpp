@@ -6,9 +6,9 @@
 int main(int value, const char*[])
 {
 switch(value) {
-             case 0: printf("Hello\n"); break;
-  [[likely]] case 1: printf("World\n"); break;
-             case 2: printf("C++\n"); break;
+             case 0: puts("Hello"); break;
+  [[likely]] case 1: puts("World"); break;
+             case 2: puts("C++"); break;
 }
 
 }

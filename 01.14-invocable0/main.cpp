@@ -18,5 +18,5 @@ void DoLocked(T&& f)
 
 int main()
 {
-  DoLocked([] { printf("hello\n"); });
+  DoLocked([] { puts("hello"); });
 }

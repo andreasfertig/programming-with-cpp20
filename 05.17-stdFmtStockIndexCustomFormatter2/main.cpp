@@ -3,14 +3,13 @@
 
 // use with LC_ALL=de_DE.UTF-8 ./a.out
 
-#if __has_include(<format>) and not defined(__clang__)
-#  include <format>
-#  include <iomanip>
-#  include <iostream>
-#  include <locale>
-#  include <string>
-#  include <string_view>
-#  include <vector>
+#include <format>
+#include <iomanip>
+#include <iostream>
+#include <locale>
+#include <string>
+#include <string_view>
+#include <vector>
 
 using namespace std::literals;
 
@@ -67,7 +66,7 @@ struct std::formatter<StockIndex> {
   // #A New member to track whether the formatting is  localized
   bool localized = false;
 
-  constexpr auto parse(std::format_parse_context& ctx)
+  constexpr auto parse(auto& ctx)
   {
     auto it = ctx.begin();
 
@@ -97,7 +96,7 @@ struct std::formatter<StockIndex> {
     return it;
   }
 
-  auto format(const StockIndex& index, std::format_context& ctx)
+  auto format(const StockIndex& index, auto& ctx) const
   {
     // #D Add localized
     const auto locFloat{localized ? "L"s : ""s};
@@ -141,10 +140,3 @@ int main()
     std::cout << std::format("{:Lp}\n", index);
   }
 }
-
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

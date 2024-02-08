@@ -1,24 +1,32 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>) and not defined(__clang__)
+#if __has_include(<format>)
 #  include <array>
 #  include <format>
 #  include <iostream>
 #  include <string_view>
 
+// Part of C++23's STL
+template<typename T>
+constexpr std::underlying_type_t<T> to_underlying(T value)
+{
+  return static_cast<std::underlying_type_t<T>>(value);
+}
+
 enum LogLevel { Info, Warning, Error };
 
 template<>
-struct std::formatter<LogLevel> : std::formatter<const char*> {
-  inline static const char* LEVEL_NAMES[] = {"Info",
-                                             "Warning",
-                                             "Error"};
+struct std::formatter<LogLevel>
+: std::formatter<std::string_view> {
+  inline static std::array levelNames{"Info"sv,
+                                      "Warning"sv,
+                                      "Error"sv};
 
-  auto format(LogLevel c, format_context& ctx)
+  auto format(LogLevel c, auto& ctx) const
   {
-    return std::formatter<const char*>::format(LEVEL_NAMES[c],
-                                               ctx);
+    return std::formatter<std::string_view>::format(
+      levelNames.at(to_underlying(c)), ctx);
   }
 };
 
@@ -51,8 +59,10 @@ int main()
 }
 
 #else
+
 int main()
 {
 #  pragma message("not supported")
 }
+
 #endif

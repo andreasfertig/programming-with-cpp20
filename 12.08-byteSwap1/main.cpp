@@ -18,13 +18,12 @@
 
 constexpr auto ReverseBytes(std::integral auto value)
 {
-  return [&]<size_t... I>(std::index_sequence<I...>)->decltype(value)
-  {
-    return ((((value >> I * 8) & 0xff)
-             << ((8 * sizeof(value)) - ((1 + I) * 8))) |
-            ...);
-  }
-  (std::make_index_sequence<sizeof(value)>{});
+  return
+    [&]<size_t... I>(std::index_sequence<I...>) -> decltype(value) {
+      return ((((value >> I * 8) & 0xff)
+               << ((8 * sizeof(value)) - ((1 + I) * 8))) |
+              ...);
+    }(std::make_index_sequence<sizeof(value)>{});
 }
 
 template<std::integral T>

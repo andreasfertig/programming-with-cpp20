@@ -1,11 +1,10 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<ranges>) and not defined(__clang__)
-#  include <iostream>
-#  include <numeric>
-#  include <ranges>
-#  include <vector>
+#include <iostream>
+#include <numeric>
+#include <ranges>
+#include <vector>
 
 int main()
 {
@@ -18,9 +17,3 @@ int main()
   auto res = std::accumulate(rng.begin(), rng.end(), 0);
   std::cout << res << '\n';
 }
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

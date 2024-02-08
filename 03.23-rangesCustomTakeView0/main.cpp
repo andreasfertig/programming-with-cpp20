@@ -1,16 +1,15 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<ranges>) and not defined(__clang__)
-#  include <algorithm>
-#  include <ranges>
-#  include <string>
+#include <algorithm>
+#include <ranges>
+#include <string>
 
-#  include <algorithm>
-#  include <cassert>
-#  include <iostream>
-#  include <ranges>
-#  include <vector>
+#include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <ranges>
+#include <vector>
 
 namespace rv = std::ranges::views;
 
@@ -47,12 +46,12 @@ public:
 
 template<std::ranges::range R>  // #G Deduction guide
 custom_take_view(R&& base, std::ranges::range_difference_t<R>)
-  ->custom_take_view<std::ranges::views::all_t<R>>;
+  -> custom_take_view<std::ranges::views::all_t<R>>;
 
 namespace details {
   template<std::integral T>  // #A Only integrals
   struct custom_take_range_adaptor_closure {
-    T count_;  // #B Store the count
+    T count_;                // #B Store the count
     constexpr custom_take_range_adaptor_closure(T count)
     : count_{count}
     {}
@@ -100,12 +99,3 @@ int main()
   std::ranges::copy(v,
                     std::ostream_iterator<int>(std::cout, " "));
 }
-
-#else
-
-int main()
-{
-#  pragma message("not supported")
-}
-
-#endif

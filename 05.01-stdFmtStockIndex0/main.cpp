@@ -1,13 +1,12 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(<format>) and not defined(__clang__)
-#  include <format>
-#  include <iomanip>
-#  include <iostream>
-#  include <locale>
-#  include <string>
-#  include <vector>
+#include <format>
+#include <iomanip>
+#include <iostream>
+#include <locale>
+#include <string>
+#include <vector>
 
 class StockIndex {
   std::string mName{};
@@ -101,7 +100,7 @@ void WithIostreamOperator()
 }
 
 namespace withLocale {
-  //#  include "withIostreamOperatorLocale.cpp"
+  // #  include "withIostreamOperatorLocale.cpp"
 }
 
 void WithStdFormat()
@@ -131,10 +130,3 @@ int main()
   std::cout << '\n';
   WithStdFormat();
 }
-
-#else
-int main()
-{
-#  pragma message("not supported")
-}
-#endif

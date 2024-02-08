@@ -1,12 +1,10 @@
 // Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
-#if __has_include(                                             \
-  <format>) and not defined(__clang__) && __has_include(<source_location>) && not defined(__clang__)
-#  include <format>
-#  include <iostream>
-#  include <source_location>
-#  include <string_view>
+#include <format>
+#include <iostream>
+#include <source_location>
+#include <string_view>
 
 enum LogLevel { Info, Warning, Error };
 
@@ -40,12 +38,3 @@ int main()
 {
   Log(LogLevel::Info, "hello {} {} {}", 2, 3, 4);
 }
-
-#else
-
-int main()
-{
-#  pragma message("not supported")
-}
-
-#endif
