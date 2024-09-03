@@ -97,7 +97,7 @@ void UseCounterValue(int i);
 IntGenerator  // #A Returning a coroutine object
 counter(int start, int end)
 {
-  while(start < end) {
+  while(start <= end) {
     co_yield start;  // #B Yielding a value and giving control back to the  caller
     ++start;
   }
