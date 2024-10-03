@@ -96,6 +96,12 @@ struct std::formatter<StockIndex> {
     return it;
   }
 
+  template<typename T>
+  const T& unmove(T&& x) const
+  {
+	  return x;
+  }
+
   auto format(const StockIndex& index, auto& ctx) const
   {
     // #D Add localized
@@ -110,7 +116,7 @@ struct std::formatter<StockIndex> {
       return std::vformat_to(
         ctx.out(),
         fmt,
-        std::make_format_args(index.name(), index.points()));
+        std::make_format_args(index.name(), unmove(index.points())));
 
     } else {
       const auto fmt{
@@ -123,9 +129,9 @@ struct std::formatter<StockIndex> {
         ctx.out(),
         fmt,
         std::make_format_args(index.name(),
-                              index.points(),
-                              index.pointsDiff(),
-                              index.pointsPercent()));
+                              unmove(index.points()),
+                              unmove(index.pointsDiff()),
+                              unmove(index.pointsPercent())));
     }
   }
 };
