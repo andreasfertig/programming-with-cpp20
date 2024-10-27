@@ -85,6 +85,12 @@ struct std::formatter<StockIndex> {
     return it;
   }
 
+  template<typename T>
+  const T& unmove(T&& x) const
+  {
+	  return x;
+  }
+
   auto format(const StockIndex& index, auto& ctx) const
   {
     if(IndexFormat::Short == indexFormat) {
@@ -102,9 +108,9 @@ struct std::formatter<StockIndex> {
         ctx.out(),
         fmt,
         std::make_format_args(index.name(),
-                              index.points(),
-                              index.pointsDiff(),
-                              index.pointsPercent()));
+                              unmove(index.points()),
+                              unmove(index.pointsDiff()),
+                              unmove(index.pointsPercent())));
     }
   }
 };

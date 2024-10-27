@@ -1,4 +1,4 @@
-// Copyright (c) Andreas Fertig.
+﻿// Copyright (c) Andreas Fertig.
 // SPDX-License-Identifier: MIT
 
 #include <new>

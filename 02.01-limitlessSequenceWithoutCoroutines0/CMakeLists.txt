@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(EXEC_NAME ${CMAKE_CURRENT_SOURCE_DIR})
 
-project(${EXEC_NAME} CXX)
+# #project(${EXEC_NAME} CXX)
 
 # build the filename
 get_filename_component(EXEC_NAME "${EXEC_NAME}" NAME)
